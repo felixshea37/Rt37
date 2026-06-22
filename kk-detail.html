@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT 37 — Detail KK</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#06050f;
+    --card:#0d0b1a;
+    --border:#1a1235;
+    --border-light:#241a42;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --accent:#00f5ff;
+    --accent-dim:#00f5ff18;
+    --accent2:#ff00c8;
+    --accent2-dim:#ff00c818;
+    --danger:#ff2d6b;
+    --amber:#f5e642;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{ background:var(--bg); }
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body{
+    background:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px),
+      var(--bg);
+    background-size: 32px 32px, 32px 32px, 100%;
+    min-height:100vh;
+    min-height:100dvh;
+  }
+
+  button{ font-family:inherit; }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.15);
+  }
+  .topbar-inner{
+    max-width:480px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 14px;
+  }
+  .back-btn{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:none;
+    border:none;
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .back-btn svg{ width:19px;height:19px; }
+  .topbar-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:16px;
+    letter-spacing:0.5px;
+    color:var(--text);
+  }
+
+  /* ---------- KK header card ---------- */
+  .page{
+    max-width:480px;
+    margin:0 auto;
+    padding:16px 16px 32px;
+  }
+
+  .kk-header{
+    background:linear-gradient(135deg,rgba(0,245,255,0.06),rgba(255,0,200,0.04));
+    border:1px solid rgba(0,245,255,0.25);
+    border-radius:16px;
+    padding:18px 18px;
+    margin-bottom:18px;
+    box-shadow:0 0 20px rgba(0,245,255,0.05);
+  }
+  .kk-eyebrow{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .kk-eyebrow svg{ width:13px;height:13px; }
+  .kk-no{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:22px;
+    letter-spacing:0.5px;
+    color:var(--text);
+    margin-bottom:4px;
+  }
+  .kk-no .num{ color:var(--accent); text-shadow:0 0 12px rgba(0,245,255,0.4); }
+  .kk-address{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:14px;
+  }
+  .kk-address svg{ width:13px;height:13px;flex-shrink:0; }
+
+  .kk-meta-row{
+    display:flex;
+    gap:10px;
+  }
+  .kk-meta-chip{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--border-light);
+    border-radius:10px;
+    padding:9px 12px;
+  }
+  .kk-meta-chip .meta-num{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:17px;
+    color:var(--text);
+  }
+  .kk-meta-chip .meta-label{
+    font-size:10.5px;
+    color:var(--text-dim);
+  }
+
+  /* ---------- Section label ---------- */
+  .section-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    margin:4px 2px 12px;
+  }
+  .section-label svg{ width:14px;height:14px; color:var(--accent); }
+
+  /* ---------- Member card ---------- */
+  .member-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .member-card{
+    background:var(--card);
+    border:1px solid var(--border-light);
+    border-radius:16px;
+    padding:16px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .member-card.is-head{
+    border-color:rgba(0,245,255,0.3);
+    box-shadow:0 0 16px rgba(0,245,255,0.06);
+  }
+  .member-card.is-head::before{
+    content:'';
+    position:absolute;
+    top:0; left:0;
+    width:3px; height:100%;
+    background:linear-gradient(180deg, var(--accent), transparent);
+  }
+
+  .member-top{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:13px;
+  }
+
+  .member-avatar{
+    width:54px;height:54px;
+    border-radius:50%;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:19px;
+    border:2px solid rgba(255,255,255,0.12);
+    overflow:hidden;
+  }
+  .member-avatar img{ width:100%;height:100%;object-fit:cover; }
+
+  .member-name-block{
+    flex:1;
+    min-width:0;
+  }
+  .member-name-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .member-name{
+    font-weight:700;
+    font-size:16px;
+    color:#fff;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .member-relation{
+    display:inline-flex;
+    align-items:center;
+    margin-top:3px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    padding:3px 9px;
+    border-radius:7px;
+    text-transform:uppercase;
+  }
+  .relation-kepala{ background:rgba(0,245,255,0.14); color:var(--accent); }
+  .relation-istri{ background:rgba(255,0,200,0.12); color:#ff7adb; }
+  .relation-anak{ background:rgba(61,220,151,0.14); color:#3ddc97; }
+  .relation-lain{ background:rgba(150,90,220,0.14); color:#b18aff; }
+
+  .view-link{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--accent);
+    background:rgba(0,245,255,0.08);
+    border:1px solid rgba(0,245,255,0.3);
+    border-radius:20px;
+    padding:6px 12px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .view-link svg{ width:12px;height:12px; }
+
+  .member-data{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,0.05);
+  }
+  .data-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:13px;
+    color:var(--text);
+  }
+  .data-row svg{
+    width:15px;height:15px;
+    flex-shrink:0;
+    color:var(--text-dim);
+  }
+  .data-row .data-label{
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  .data-row .data-value{
+    font-weight:600;
+    color:var(--text);
+  }
+
+  .member-bio{
+    margin-top:11px;
+    padding:10px 12px;
+    background:rgba(255,255,255,0.02);
+    border-left:2px solid var(--border-light);
+    border-radius:0 8px 8px 0;
+    font-size:12.5px;
+    font-style:italic;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back-btn" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="topbar-title">Detail Kepala Keluarga</span>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <div class="kk-header">
+      <div class="kk-eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Kartu Keluarga
+      </div>
+      <div class="kk-no">No. KK <span class="num">037-014</span></div>
+      <div class="kk-address">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Jl. Sukamaju Raya No. 14, RT 37, Kel. Sukamaju
+      </div>
+      <div class="kk-meta-row">
+        <div class="kk-meta-chip">
+          <span class="meta-num">4</span>
+          <span class="meta-label">Anggota</span>
+        </div>
+        <div class="kk-meta-chip">
+          <span class="meta-num">Tetap</span>
+          <span class="meta-label">Status Hunian</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Anggota Keluarga
+    </div>
+
+    <div class="member-list" id="memberList"></div>
+
+  </div>
+
+<script>
+  const members = [
+    {
+      name: 'Budi Santoso',
+      relation: 'kepala',
+      initial: 'B',
+      color: 'rgba(0,245,255,0.14)|#00f5ff',
+      photo: null,
+      birthdate: '14 Mei 1982',
+      job: 'Wiraswasta',
+      status: 'Menikah',
+      bio: 'Ketua RT periode 2023–2026. Aktif di kegiatan kerja bakti dan koordinasi warga.',
+    },
+    {
+      name: 'Sri Wahyuni',
+      relation: 'istri',
+      initial: 'S',
+      color: 'rgba(255,0,200,0.14)|#ff7adb',
+      photo: null,
+      birthdate: '2 Agustus 1985',
+      job: 'Ibu Rumah Tangga',
+      status: 'Menikah',
+      bio: null,
+    },
+    {
+      name: 'Dimas Pratama',
+      relation: 'anak',
+      initial: 'D',
+      color: 'rgba(61,220,151,0.14)|#3ddc97',
+      photo: null,
+      birthdate: '9 Januari 2010',
+      job: 'Pelajar',
+      status: 'Belum Menikah',
+      bio: null,
+    },
+    {
+      name: 'Citra Ayu',
+      relation: 'anak',
+      initial: 'C',
+      color: 'rgba(61,220,151,0.14)|#3ddc97',
+      photo: null,
+      birthdate: '21 Maret 2014',
+      job: 'Pelajar',
+      status: 'Belum Menikah',
+      bio: null,
+    },
+  ];
+
+  const relationLabel = {
+    kepala: 'Kepala Keluarga',
+    istri: 'Istri',
+    suami: 'Suami',
+    anak: 'Anak',
+    lain: 'Anggota Lain',
+  };
+  const relationClass = {
+    kepala: 'relation-kepala',
+    istri: 'relation-istri',
+    suami: 'relation-istri',
+    anak: 'relation-anak',
+    lain: 'relation-lain',
+  };
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderMembers(){
+    const list = document.getElementById('memberList');
+    list.innerHTML = members.map(m => {
+      const [bg, color] = m.color.split('|');
+      return `
+      <div class="member-card ${m.relation === 'kepala' ? 'is-head' : ''}">
+        <div class="member-top">
+          <div class="member-avatar" style="background:${bg};color:${color};">
+            ${m.photo ? `<img src="${m.photo}" alt="${escapeHtml(m.name)}">` : m.initial}
+          </div>
+          <div class="member-name-block">
+            <div class="member-name-row">
+              <div class="member-name">${escapeHtml(m.name)}</div>
+              <button class="view-link" data-name="${escapeHtml(m.name)}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                View
+              </button>
+            </div>
+            <span class="member-relation ${relationClass[m.relation] || 'relation-lain'}">${relationLabel[m.relation] || 'Anggota'}</span>
+          </div>
+        </div>
+
+        <div class="member-data">
+          <div class="data-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="data-label">Lahir</span>
+            <span class="data-value">${escapeHtml(m.birthdate)}</span>
+          </div>
+          <div class="data-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <span class="data-label">Pekerjaan</span>
+            <span class="data-value">${escapeHtml(m.job)}</span>
+          </div>
+          <div class="data-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            <span class="data-label">Status</span>
+            <span class="data-value">${escapeHtml(m.status)}</span>
+          </div>
+        </div>
+
+        ${m.bio ? `<div class="member-bio">${escapeHtml(m.bio)}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('.view-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // TODO: arahkan ke halaman profil/akun warga sesuai nama
+        console.log('View profile:', btn.dataset.name);
+      });
+    });
+  }
+
+  renderMembers();
+
+  document.querySelector('.back-btn').addEventListener('click', () => {
+    history.back();
+  });
+</script>
+
+</body>
+</html>

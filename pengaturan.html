@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT 37 — Pengaturan Akun</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0a0e0f;
+    --card:#12181a;
+    --border:#1a2226;
+    --border-light:#222b2e;
+    --text:#e8ecec;
+    --text-dim:#7d8b8d;
+    --accent:#3ddc97;
+    --accent-dim:#2a3f38;
+    --danger:#e2654f;
+    --amber:#e0a847;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{ background:var(--bg); }
+
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  body{
+    background:var(--bg);
+    min-height:100vh;
+    min-height:100dvh;
+  }
+
+  button{ font-family:inherit; }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(10,14,15,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+
+  .topbar-inner{
+    max-width:480px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+  }
+
+  .back-btn{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:none;
+    border:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:var(--text);
+    flex-shrink:0;
+  }
+
+  .back-btn svg{ width:20px;height:20px; }
+  .back-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .topbar-inner h1{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:17px;
+  }
+
+  /* ---------- Page ---------- */
+  .page{
+    max-width:480px;
+    margin:0 auto;
+    padding:20px 16px 50px;
+  }
+
+  /* Profile header */
+  .profile-header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:24px;
+  }
+
+  .avatar-large{
+    width:72px;height:72px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:700;
+    flex-shrink:0;
+    position:relative;
+  }
+
+  .avatar-edit-btn{
+    position:absolute;
+    bottom:-2px;right:-2px;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--accent);
+    border:2px solid var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+
+  .avatar-edit-btn svg{ width:13px;height:13px; color:#06150f; }
+
+  .profile-header .pname{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin-bottom:4px;
+  }
+
+  .profile-header .pcode{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:6px;
+  }
+
+  .status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:11.5px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:6px;
+    letter-spacing:0.02em;
+  }
+
+  .status-badge.kk{
+    background:rgba(61,220,151,0.12);
+    color:var(--accent);
+    border:1px solid rgba(61,220,151,0.3);
+  }
+
+  .status-badge.anggota{
+    background:var(--border-light);
+    color:var(--text-dim);
+    border:1px solid var(--border-light);
+  }
+
+  /* Section */
+  .section{
+    background:var(--card);
+    border:1px solid var(--border-light);
+    border-radius:16px;
+    padding:18px 16px;
+    margin-bottom:16px;
+  }
+
+  .section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+
+  .section-title h2{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:15px;
+  }
+
+  .section-title .hint{
+    font-size:11.5px;
+    color:var(--text-dim);
+  }
+
+  .field{ margin-bottom:14px; }
+  .field:last-child{ margin-bottom:0; }
+
+  .field label{
+    display:block;
+    font-size:11.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:7px;
+    font-weight:600;
+  }
+
+  input, select{
+    width:100%;
+    background:#0d1314;
+    border:1px solid var(--border-light);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:14px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+  }
+
+  input::placeholder{ color:#4a5658; }
+
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+
+  input:disabled{
+    color:var(--text-dim);
+    background:#0a0f10;
+    cursor:not-allowed;
+  }
+
+  .field-readonly-note{
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-top:6px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+
+  .field-readonly-note svg{ width:12px;height:12px; flex-shrink:0; }
+
+  .save-btn{
+    width:100%;
+    background:var(--accent);
+    color:#06150f;
+    border:none;
+    border-radius:10px;
+    padding:13px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:6px;
+  }
+
+  .save-btn:active{ transform:scale(0.99); }
+  .save-btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+
+  .save-btn.secondary{
+    background:var(--border-light);
+    color:var(--text);
+  }
+
+  .toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--accent);
+    color:#06150f;
+    font-size:13.5px;
+    font-weight:600;
+    padding:11px 18px;
+    border-radius:10px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    z-index:100;
+    box-shadow:0 10px 24px -8px rgba(0,0,0,0.5);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+  }
+
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .toast svg{ width:15px;height:15px; }
+
+  .error-text{
+    color:var(--danger);
+    font-size:12.5px;
+    margin-top:6px;
+    display:none;
+  }
+
+  .error-text.show{ display:block; }
+
+  /* Activity tabs */
+  .activity-tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:14px;
+  }
+
+  .activity-tab{
+    flex:1;
+    text-align:center;
+    padding:9px 0;
+    font-size:13px;
+    font-weight:600;
+    border-radius:8px;
+    background:var(--border-light);
+    color:var(--text-dim);
+    border:none;
+    cursor:pointer;
+  }
+
+  .activity-tab.active{
+    background:var(--accent-dim);
+    color:var(--accent);
+  }
+
+  .activity-item{
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+
+  .activity-item:last-child{ border-bottom:none; padding-bottom:0; }
+
+  .activity-meta{
+    font-size:12px;
+    color:var(--text-dim);
+    margin-bottom:4px;
+  }
+
+  .activity-text{
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--text);
+  }
+
+  .activity-stats{
+    display:flex;
+    gap:14px;
+    margin-top:6px;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+
+  .empty-activity{
+    text-align:center;
+    padding:24px 0;
+    color:var(--text-dim);
+    font-size:13px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="back-btn" aria-label="Kembali" onclick="window.history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <h1>Pengaturan Akun</h1>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <div class="profile-header">
+      <div class="avatar-large">
+        Y
+        <button class="avatar-edit-btn" aria-label="Ganti foto profil" id="changePhotoBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+      </div>
+      <div>
+        <div class="pname">Yolina</div>
+        <div class="pcode">Kode warga: RT37-014</div>
+        <span class="status-badge kk" id="statusBadge">Kepala Keluarga</span>
+      </div>
+    </div>
+
+    <!-- Edit data diri -->
+    <div class="section">
+      <div class="section-title">
+        <h2>Data diri</h2>
+      </div>
+
+      <form id="profileForm">
+        <div class="field">
+          <label for="nama">Nama lengkap</label>
+          <input type="text" id="nama" value="Yolina">
+        </div>
+
+        <div class="field">
+          <label for="kode">Kode warga</label>
+          <input type="text" id="kode" value="RT37-014" disabled>
+          <div class="field-readonly-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Kode tidak bisa diubah. Hubungi pengurus RT bila ada kesalahan.
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="status">Status keluarga</label>
+          <input type="text" id="status" value="Kepala Keluarga" disabled>
+          <div class="field-readonly-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Diatur oleh pengurus RT berdasarkan data kependudukan.
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="noHp">No. HP / WhatsApp</label>
+          <input type="tel" id="noHp" value="0812-3456-7890" placeholder="08xx-xxxx-xxxx">
+        </div>
+
+        <div class="field">
+          <label for="tglLahir">Tanggal lahir</label>
+          <input type="date" id="tglLahir" value="1996-04-12">
+        </div>
+
+        <div class="field">
+          <label for="noRumah">No. rumah / blok</label>
+          <input type="text" id="noRumah" value="Blok C No. 14" placeholder="contoh: Blok C No. 14">
+        </div>
+
+        <button type="submit" class="save-btn">Simpan perubahan</button>
+      </form>
+    </div>
+
+    <!-- Ganti sandi -->
+    <div class="section">
+      <div class="section-title">
+        <h2>Ganti sandi</h2>
+      </div>
+
+      <form id="passwordForm">
+        <div class="field">
+          <label for="sandiLama">Sandi lama</label>
+          <input type="password" id="sandiLama" placeholder="Masukkan sandi saat ini" autocomplete="current-password">
+        </div>
+
+        <div class="field">
+          <label for="sandiBaru">Sandi baru</label>
+          <input type="password" id="sandiBaru" placeholder="Minimal 6 karakter" autocomplete="new-password">
+        </div>
+
+        <div class="field">
+          <label for="sandiKonfirmasi">Konfirmasi sandi baru</label>
+          <input type="password" id="sandiKonfirmasi" placeholder="Ulangi sandi baru" autocomplete="new-password">
+          <div class="error-text" id="pwError">Sandi baru dan konfirmasi tidak cocok.</div>
+        </div>
+
+        <button type="submit" class="save-btn secondary">Ubah sandi</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastText">Perubahan disimpan</span>
+  </div>
+
+<script>
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- Toast helper ----------
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+
+  function showToast(msg){
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // ---------- Save profile ----------
+  document.getElementById('profileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nama = document.getElementById('nama').value.trim();
+    if(!nama){
+      showToast('Nama tidak boleh kosong');
+      return;
+    }
+    // Nanti: kirim ke backend
+    showToast('Data diri berhasil disimpan');
+  });
+
+  // ---------- Change password ----------
+  const passwordForm = document.getElementById('passwordForm');
+  const pwError = document.getElementById('pwError');
+
+  passwordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const lama = document.getElementById('sandiLama').value;
+    const baru = document.getElementById('sandiBaru').value;
+    const konfirmasi = document.getElementById('sandiKonfirmasi').value;
+
+    pwError.classList.remove('show');
+
+    if(!lama || !baru || !konfirmasi){
+      showToast('Lengkapi semua kolom sandi');
+      return;
+    }
+    if(baru.length < 6){
+      pwError.textContent = 'Sandi baru minimal 6 karakter.';
+      pwError.classList.add('show');
+      return;
+    }
+    if(baru !== konfirmasi){
+      pwError.textContent = 'Sandi baru dan konfirmasi tidak cocok.';
+      pwError.classList.add('show');
+      return;
+    }
+
+    // Nanti: verifikasi sandi lama & update ke backend
+    passwordForm.reset();
+    showToast('Sandi berhasil diubah');
+  });
+
+  // ---------- Change photo (placeholder) ----------
+  document.getElementById('changePhotoBtn').addEventListener('click', () => {
+    showToast('Upload foto profil — segera disusul');
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT 37 — Galeri Warga</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#06050f;
+    --card:#0d0b1a;
+    --border:#1a1235;
+    --border-light:#241a42;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --accent:#00f5ff;
+    --accent-dim:#00f5ff18;
+    --accent2:#ff00c8;
+    --accent2-dim:#ff00c818;
+    --danger:#ff2d6b;
+    --amber:#f5e642;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{ background:var(--bg); }
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    overscroll-behavior:none;
+  }
+  body{
+    background:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px),
+      var(--bg);
+    background-size: 32px 32px, 32px 32px, 100%;
+    min-height:100vh;
+    min-height:100dvh;
+    overflow:hidden;
+  }
+
+  button{ font-family:inherit; }
+
+  /* ============ Tag colors (shared with Reels) ============ */
+  .tag-kerjabakti{ background:rgba(61,220,151,0.22); color:#3ddc97; }
+  .tag-pengajian{ background:rgba(150,90,220,0.25); color:#b18aff; }
+  .tag-17agustus{ background:rgba(245,176,40,0.25); color:#f5b028; }
+  .tag-kasrt{ background:rgba(80,140,220,0.25); color:#6fa8e8; }
+  .tag-infowarga{ background:rgba(0,245,255,0.18); color:var(--accent); }
+  .tag-rapat{ background:rgba(226,101,79,0.22); color:#e2654f; }
+
+  /* ============ ALBUM GRID VIEW ============ */
+  #albumGridView{
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .gallery-topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 12px;
+    position:sticky;
+    top:0;
+    z-index:6;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.12);
+  }
+  .gallery-title-block{ flex:1; min-width:0; }
+  .gallery-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:18px;
+    letter-spacing:0.3px;
+    color:var(--text);
+  }
+  .gallery-sub{
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+  .gallery-search-btn{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:rgba(0,245,255,0.05);
+    border:1px solid rgba(0,245,255,0.2);
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .gallery-search-btn svg{ width:16px;height:16px; }
+
+  .album-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    padding:14px 16px 90px;
+  }
+
+  .album-card{
+    position:relative;
+    aspect-ratio:1/1.05;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--border-light);
+    background:#0a0816;
+    cursor:pointer;
+  }
+
+  .album-cover-stack{
+    position:absolute;
+    inset:0;
+  }
+  .album-cover-fallback{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#0d1a14 0%,#0a1520 50%,#140d1a 100%);
+  }
+  .album-cover-fallback svg{ width:34px;height:34px;color:rgba(255,255,255,0.1); }
+
+  .album-card::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, transparent 35%, transparent 55%, rgba(0,0,0,0.85) 100%);
+    pointer-events:none;
+  }
+
+  .album-tag{
+    position:absolute;
+    top:8px; left:8px;
+    z-index:2;
+    display:flex; align-items:center; gap:4px;
+    padding:4px 8px;
+    border-radius:7px;
+    font-size:9.5px;
+    font-weight:800;
+    letter-spacing:0.3px;
+    text-transform:uppercase;
+    backdrop-filter:blur(4px);
+  }
+  .album-tag svg{ width:9px;height:9px; }
+
+  .album-photo-count{
+    position:absolute;
+    top:8px; right:8px;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:3px;
+    background:rgba(0,0,0,0.55);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    font-family:'Share Tech Mono',monospace;
+    padding:3px 7px;
+    border-radius:6px;
+  }
+  .album-photo-count svg{ width:10px;height:10px; }
+
+  .album-info{
+    position:absolute;
+    bottom:10px; left:10px; right:10px;
+    z-index:2;
+    color:#fff;
+  }
+  .album-name{
+    font-weight:800;
+    font-size:14.5px;
+    line-height:1.25;
+    margin-bottom:3px;
+    text-shadow:0 1px 6px rgba(0,0,0,0.5);
+  }
+  .album-date{
+    font-size:11px;
+    color:rgba(255,255,255,0.65);
+  }
+
+  /* ============ PHOTO GRID (inside album) ============ */
+  #albumDetailView{
+    display:none;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .detail-topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 12px;
+    position:sticky;
+    top:0;
+    z-index:6;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.12);
+  }
+  .detail-back-btn{
+    width:32px;height:32px;
+    border-radius:50%;
+    background:none;
+    border:none;
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .detail-back-btn svg{ width:19px;height:19px; }
+  .detail-title-block{ flex:1; min-width:0; }
+  .detail-title{
+    font-weight:700;
+    font-size:15px;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .detail-sub{
+    font-size:11px;
+    color:var(--text-dim);
+    margin-top:1px;
+  }
+
+  .photo-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+    padding:10px;
+    padding-bottom:40px;
+  }
+  .photo-item{
+    aspect-ratio:1/1;
+    border-radius:8px;
+    overflow:hidden;
+    background:#0a0816;
+    border:1px solid var(--border-light);
+    cursor:pointer;
+    position:relative;
+  }
+  .photo-item img{ width:100%;height:100%;object-fit:cover;display:block; }
+  .photo-fallback{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#0d1a14 0%,#0a1520 50%,#140d1a 100%);
+  }
+  .photo-fallback svg{ width:22px;height:22px;color:rgba(255,255,255,0.1); }
+
+  /* ============ FULLSCREEN VIEWER ============ */
+  #photoViewer{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:30;
+    background:#000;
+  }
+
+  .viewer-track{
+    width:100%;
+    height:100%;
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .viewer-track::-webkit-scrollbar{ display:none; }
+
+  .viewer-slide{
+    flex:0 0 100%;
+    width:100%;
+    height:100%;
+    scroll-snap-align:start;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .viewer-slide img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+  }
+  .viewer-slide .photo-fallback{
+    width:80%;
+    height:60%;
+    border-radius:16px;
+  }
+  .viewer-slide .photo-fallback svg{ width:48px;height:48px; }
+
+  .viewer-topbar{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 24px;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    pointer-events:none;
+  }
+  .viewer-topbar > *{ pointer-events:auto; }
+
+  .viewer-close-btn{
+    width:36px;height:36px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .viewer-close-btn svg{ width:16px;height:16px; }
+
+  .viewer-counter{
+    font-family:'Share Tech Mono',monospace;
+    font-size:12.5px;
+    color:#fff;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,0.15);
+    padding:6px 12px;
+    border-radius:14px;
+  }
+
+  .viewer-bottombar{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    z-index:5;
+    padding:24px 18px max(18px, env(safe-area-inset-bottom));
+    background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color:#fff;
+  }
+  .viewer-album-name{
+    font-weight:700;
+    font-size:13.5px;
+    margin-bottom:3px;
+  }
+  .viewer-caption{
+    font-size:12.5px;
+    color:rgba(255,255,255,0.7);
+  }
+
+  .gallery-empty{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:60px 24px;
+    color:var(--text-dim);
+    text-align:center;
+    grid-column:1/-1;
+  }
+  .gallery-empty svg{ width:46px;height:46px;opacity:0.3; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== ALBUM GRID VIEW ===== -->
+  <div id="albumGridView">
+    <div class="gallery-topbar">
+      <div class="gallery-title-block">
+        <div class="gallery-title">Galeri Warga</div>
+        <div class="gallery-sub">Dokumentasi kegiatan RT 37</div>
+      </div>
+      <button class="gallery-search-btn" aria-label="Cari">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+    <div class="album-grid" id="albumGrid"></div>
+  </div>
+
+  <!-- ===== ALBUM DETAIL (PHOTO GRID) VIEW ===== -->
+  <div id="albumDetailView">
+    <div class="detail-topbar">
+      <button class="detail-back-btn" id="detailBackBtn" aria-label="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="detail-title-block">
+        <div class="detail-title" id="detailTitle"></div>
+        <div class="detail-sub" id="detailSub"></div>
+      </div>
+    </div>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+
+  <!-- ===== FULLSCREEN PHOTO VIEWER ===== -->
+  <div id="photoViewer">
+    <div class="viewer-topbar">
+      <button class="viewer-close-btn" id="viewerCloseBtn" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="viewer-counter" id="viewerCounter"></div>
+    </div>
+    <div class="viewer-track" id="viewerTrack"></div>
+    <div class="viewer-bottombar">
+      <div class="viewer-album-name" id="viewerAlbumName"></div>
+      <div class="viewer-caption" id="viewerCaption"></div>
+    </div>
+  </div>
+
+<script>
+  const galleryTags = {
+    kerjabakti: { label:'Kerja Bakti', cls:'tag-kerjabakti', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v14h16v-6"/></svg>' },
+    pengajian:  { label:'Pengajian',  cls:'tag-pengajian',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4z"/><path d="M5 21v-7a7 7 0 0 1 14 0v7"/></svg>' },
+    agustusan:  { label:'17 Agustus', cls:'tag-17agustus',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 21V4l9 4 9-4v13l-9 4z"/></svg>' },
+    kasrt:      { label:'Kas RT',     cls:'tag-kasrt',       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>' },
+    rapat:      { label:'Rapat RT',   cls:'tag-rapat',       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+  };
+
+  // Dummy data — album = 1 kegiatan, photos = foto di dalamnya
+  let albums = [
+    {
+      id: 1, tag:'kerjabakti', name:'Kerja Bakti Minggu', date:'22 Juni 2025', cover:null,
+      photos: [
+        { src:null, caption:'Bersih-bersih lapangan RT 37' },
+        { src:null, caption:'Gotong royong angkut sampah' },
+        { src:null, caption:'Istirahat sambil ngopi bareng' },
+        { src:null, caption:'Pak RT mantau jalannya kerja bakti' },
+        { src:null, caption:'Bersih-bersih got di gang 3' },
+      ],
+    },
+    {
+      id: 2, tag:'agustusan', name:'17 Agustus 2025', date:'17 Agustus 2025', cover:null,
+      photos: [
+        { src:null, caption:'Hias gerbang RT pakai bendera' },
+        { src:null, caption:'Lomba balap karung anak-anak' },
+        { src:null, caption:'Upacara bendera di lapangan RT' },
+        { src:null, caption:'Panggung hiburan malam 17an' },
+        { src:null, caption:'Pembagian hadiah lomba' },
+        { src:null, caption:'Foto bersama panitia 17an' },
+        { src:null, caption:'Lomba makan kerupuk' },
+      ],
+    },
+    {
+      id: 3, tag:'pengajian', name:'Pengajian Rutin', date:'15 Juni 2025', cover:null,
+      photos: [
+        { src:null, caption:'Pengajian rutin di musholla RT 37' },
+        { src:null, caption:'Ustadz Hadi memberikan tausiyah' },
+        { src:null, caption:'Warga khusyuk mendengarkan' },
+      ],
+    },
+    {
+      id: 4, tag:'rapat', name:'Rapat Koordinasi RT', date:'1 Juni 2025', cover:null,
+      photos: [
+        { src:null, caption:'Rapat pengurus membahas agenda bulanan' },
+        { src:null, caption:'Diskusi rencana kerja bakti' },
+        { src:null, caption:'Pak RW turut hadir dalam rapat' },
+        { src:null, caption:'Notulen rapat dicatat sekretaris' },
+      ],
+    },
+    {
+      id: 5, tag:'kasrt', name:'Penyerahan Kas RT', date:'28 Mei 2025', cover:null,
+      photos: [
+        { src:null, caption:'Bendahara menyerahkan laporan kas' },
+        { src:null, caption:'Transparansi keuangan RT bulan ini' },
+      ],
+    },
+  ];
+
+  let activeAlbumId = null;
+  let activePhotoIndex = 0;
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- ALBUM GRID ----------
+  function renderAlbumGrid(){
+    const grid = document.getElementById('albumGrid');
+
+    if(albums.length === 0){
+      grid.innerHTML = `
+        <div class="gallery-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Belum ada album kegiatan.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = albums.map(a => {
+      const tag = galleryTags[a.tag];
+      return `
+      <div class="album-card" data-aid="${a.id}">
+        <div class="album-cover-stack">
+          <div class="album-cover-fallback">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+        </div>
+        <div class="album-tag ${tag.cls}">${tag.icon}${tag.label}</div>
+        <div class="album-photo-count">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          ${a.photos.length}
+        </div>
+        <div class="album-info">
+          <div class="album-name">${escapeHtml(a.name)}</div>
+          <div class="album-date">${escapeHtml(a.date)}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    grid.querySelectorAll('.album-card').forEach(card => {
+      card.addEventListener('click', () => openAlbum(Number(card.dataset.aid)));
+    });
+  }
+
+  // ---------- ALBUM DETAIL (photo grid) ----------
+  function openAlbum(id){
+    activeAlbumId = id;
+    const album = albums.find(a => a.id === id);
+    if(!album) return;
+
+    document.getElementById('detailTitle').textContent = album.name;
+    document.getElementById('detailSub').textContent = `${album.date} · ${album.photos.length} foto`;
+
+    const photoGrid = document.getElementById('photoGrid');
+    photoGrid.innerHTML = album.photos.map((p, i) => `
+      <div class="photo-item" data-idx="${i}">
+        ${p.src
+          ? `<img src="${p.src}" alt="${escapeHtml(p.caption || '')}" loading="lazy">`
+          : `<div class="photo-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+      </div>
+    `).join('');
+
+    photoGrid.querySelectorAll('.photo-item').forEach(item => {
+      item.addEventListener('click', () => openViewer(Number(item.dataset.idx)));
+    });
+
+    document.getElementById('albumGridView').style.display = 'none';
+    document.getElementById('albumDetailView').style.display = 'block';
+  }
+
+  document.getElementById('detailBackBtn').addEventListener('click', () => {
+    document.getElementById('albumDetailView').style.display = 'none';
+    document.getElementById('albumGridView').style.display = 'block';
+  });
+
+  // ---------- FULLSCREEN VIEWER ----------
+  function openViewer(index){
+    activePhotoIndex = index;
+    const album = albums.find(a => a.id === activeAlbumId);
+    if(!album) return;
+
+    const track = document.getElementById('viewerTrack');
+    track.innerHTML = album.photos.map(p => `
+      <div class="viewer-slide">
+        ${p.src
+          ? `<img src="${p.src}" alt="${escapeHtml(p.caption || '')}">`
+          : `<div class="photo-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+      </div>
+    `).join('');
+
+    document.getElementById('photoViewer').style.display = 'block';
+
+    // Jump to selected slide without smooth-scroll animation
+    requestAnimationFrame(() => {
+      track.scrollTo({ left: index * track.clientWidth, behavior:'instant' });
+      updateViewerInfo();
+    });
+
+    track.addEventListener('scroll', onViewerScroll);
+  }
+
+  function onViewerScroll(){
+    const track = document.getElementById('viewerTrack');
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    if(idx !== activePhotoIndex){
+      activePhotoIndex = idx;
+      updateViewerInfo();
+    }
+  }
+
+  function updateViewerInfo(){
+    const album = albums.find(a => a.id === activeAlbumId);
+    if(!album) return;
+    const photo = album.photos[activePhotoIndex];
+    document.getElementById('viewerCounter').textContent = `${activePhotoIndex + 1} / ${album.photos.length}`;
+    document.getElementById('viewerAlbumName').textContent = album.name;
+    document.getElementById('viewerCaption').textContent = photo.caption || '';
+  }
+
+  document.getElementById('viewerCloseBtn').addEventListener('click', () => {
+    document.getElementById('viewerTrack').removeEventListener('scroll', onViewerScroll);
+    document.getElementById('photoViewer').style.display = 'none';
+  });
+
+  renderAlbumGrid();
+</script>
+
+</body>
+</html>
