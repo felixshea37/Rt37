@@ -1,0 +1,3334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT 37 — Beranda</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#06050f;
+    --card:#0d0b1a;
+    --border:#1a1235;
+    --border-light:#241a42;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --accent:#00f5ff;       /* cyan neon */
+    --accent-dim:#00f5ff18;
+    --accent2:#ff00c8;      /* magenta neon */
+    --accent2-dim:#ff00c818;
+    --danger:#ff2d6b;
+    --amber:#f5e642;        /* electric yellow */
+  }
+
+  /* === CYBERPUNK SCANLINES === */
+  body::after{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events:none;
+    z-index:9999;
+  }
+
+  /* === GLITCH ANIMATION === */
+  @keyframes glitch{
+    0%,100%{text-shadow:0 0 8px var(--accent),0 0 20px var(--accent);}
+    25%{text-shadow:2px 0 8px var(--accent2),-2px 0 8px var(--accent);}
+    50%{text-shadow:-2px 0 10px var(--accent),2px 0 6px var(--accent2);}
+    75%{text-shadow:0 0 12px var(--amber),0 0 4px var(--accent);}
+  }
+
+  @keyframes neonPulse{
+    0%,100%{box-shadow:0 0 6px var(--accent),0 0 14px var(--accent),inset 0 0 6px rgba(0,245,255,0.05);}
+    50%{box-shadow:0 0 12px var(--accent),0 0 28px var(--accent),inset 0 0 10px rgba(0,245,255,0.1);}
+  }
+
+  @keyframes magentaPulse{
+    0%,100%{box-shadow:0 0 6px var(--accent2),0 0 14px var(--accent2);}
+    50%{box-shadow:0 0 14px var(--accent2),0 0 32px var(--accent2);}
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{
+    background:var(--bg);
+  }
+
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  body{
+    background:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px),
+      var(--bg);
+    background-size: 32px 32px, 32px 32px, 100%;
+    min-height:100vh;
+    min-height:100dvh;
+  }
+
+  button{ font-family:inherit; }
+
+  /* ---------- New Topbar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.15);
+    box-shadow:0 1px 20px rgba(0,245,255,0.06);
+  }
+
+  .topbar-inner{
+    max-width:480px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px;
+    gap:10px;
+  }
+
+  .topbar-left{ display:flex; align-items:center; gap:10px; }
+
+  .hamburger-btn{
+    width:36px; height:36px;
+    border-radius:10px;
+    background:none;
+    border:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    color:var(--text);
+    flex-shrink:0;
+  }
+  .hamburger-btn svg{ width:22px; height:22px; }
+  .hamburger-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .brand-block{}
+  .brand-row{
+    display:flex; align-items:center; gap:6px;
+  }
+  .brand-icon{
+    color:var(--accent);
+  }
+  .brand-icon svg{ width:17px; height:17px; }
+  .brand-name{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    animation:glitch 4s ease-in-out infinite;
+  }
+  .brand-name .num{ color:var(--accent); }
+  .brand-loc{
+    display:flex; align-items:center; gap:4px;
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-top:1px;
+  }
+  .brand-loc svg{ width:11px; height:11px; flex-shrink:0; }
+
+  .topbar-right{
+    display:flex; align-items:center; gap:8px;
+    flex-shrink:0;
+  }
+
+  .notif-btn{
+    position:relative;
+    width:36px; height:36px;
+    border-radius:8px;
+    background:rgba(0,245,255,0.05);
+    border:1px solid rgba(0,245,255,0.25);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--accent);
+    box-shadow:0 0 8px rgba(0,245,255,0.1);
+  }
+  .notif-btn svg{ width:18px; height:18px; }
+  .notif-badge{
+    position:absolute;
+    top:-4px; right:-4px;
+    background:var(--accent2);
+    color:#000;
+    font-size:9px; font-weight:800;
+    width:16px; height:16px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--bg);
+  }
+
+  .topbar-avatar{
+    width:36px; height:36px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    border:2px solid var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:var(--accent);
+    cursor:pointer;
+    position:relative;
+    flex-shrink:0;
+  }
+  .topbar-avatar .online-dot{
+    position:absolute;
+    bottom:0; right:0;
+    width:10px; height:10px;
+    background:var(--accent);
+    border-radius:50%;
+    border:2px solid var(--bg);
+  }
+
+  /* ---------- Hero greeting + stats ---------- */
+  .hero{
+    max-width:480px;
+    margin:0 auto;
+    padding:18px 16px 0;
+  }
+
+  .greeting{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+
+  .greeting-avatar{
+    width:52px; height:52px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    border:2px solid var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-size:19px; font-weight:700; color:var(--accent);
+    position:relative;
+    flex-shrink:0;
+  }
+  .greeting-avatar .online-dot{
+    position:absolute;
+    bottom:1px; right:1px;
+    width:12px; height:12px;
+    background:var(--accent);
+    border-radius:50%;
+    border:2px solid var(--bg);
+  }
+
+  .greeting-text{}
+  .greeting-sub{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:2px;
+  }
+  .greeting-name{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:18px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--accent);
+    text-shadow:0 0 14px rgba(0,245,255,0.4);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* Stats grid */
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:20px;
+  }
+
+  .stat-card{
+    background:linear-gradient(135deg,rgba(0,245,255,0.04),rgba(255,0,200,0.03));
+    border:1px solid rgba(0,245,255,0.2);
+    border-radius:10px;
+    padding:12px 8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    opacity:0.5;
+  }
+
+  .stat-icon{ color:var(--accent); }
+  .stat-icon svg{ width:18px; height:18px; }
+  .stat-num{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:17px;
+    color:var(--accent);
+    text-shadow:0 0 10px rgba(0,245,255,0.5);
+    letter-spacing:1px;
+    line-height:1;
+  }
+  .stat-label{
+    font-size:10px;
+    color:var(--text-dim);
+    font-weight:600;
+    text-align:center;
+    line-height:1.3;
+  }
+
+  /* ---------- Banner pengumuman penting ---------- */
+  .banner-wrap{
+    max-width:480px;
+    margin:0 auto;
+    padding:0 16px 20px;
+  }
+
+  .banner{
+    background:linear-gradient(135deg, #140620 0%, #0e0418 60%, #07030f 100%);
+    border:1px solid rgba(255,0,200,0.3);
+    border-radius:14px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 20px rgba(255,0,200,0.08),inset 0 0 30px rgba(255,0,200,0.03);
+    animation:magentaPulse 3s ease-in-out infinite;
+  }
+
+  .banner::before{
+    content:'';
+    position:absolute;
+    top:-30px; right:-20px;
+    width:140px; height:140px;
+    background:radial-gradient(circle, rgba(255,0,200,0.12) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  .banner-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:rgba(255,0,200,0.1);
+    border:1px solid rgba(255,0,200,0.3);
+    color:var(--accent2);
+    font-size:10.5px;
+    font-weight:800;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:20px;
+    margin-bottom:10px;
+  }
+  .banner-eyebrow svg{ width:11px; height:11px; }
+
+  .banner-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:16px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--accent2);
+    text-shadow:0 0 12px rgba(255,0,200,0.4);
+    margin-bottom:6px;
+    line-height:1.3;
+    padding-right:60px;
+  }
+
+  .banner-desc{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.5;
+    margin-bottom:14px;
+    padding-right:60px;
+  }
+
+  .banner-meta{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+
+  .banner-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:rgba(0,245,255,0.06);
+    border:1px solid rgba(0,245,255,0.2);
+    border-radius:6px;
+    padding:5px 9px;
+    font-size:11.5px;
+    color:var(--text-dim);
+    font-family:'Share Tech Mono',monospace;
+  }
+  .banner-chip svg{ width:12px; height:12px; color:var(--accent); }
+  .banner-chip strong{ color:var(--accent); font-weight:600; font-size:11px; display:block; margin-top:1px; }
+
+  .banner-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .banner-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:transparent;
+    color:var(--accent2);
+    border:1px solid var(--accent2);
+    border-radius:6px;
+    padding:9px 16px;
+    font-size:12px;
+    font-weight:700;
+    font-family:'Orbitron',sans-serif;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    cursor:pointer;
+    box-shadow:0 0 12px rgba(255,0,200,0.2),inset 0 0 8px rgba(255,0,200,0.05);
+    transition:box-shadow 0.2s;
+  }
+  .banner-btn:hover{
+    box-shadow:0 0 20px rgba(255,0,200,0.4),inset 0 0 12px rgba(255,0,200,0.1);
+  }
+  .banner-btn svg{ width:14px; height:14px; }
+
+  .banner-dots{
+    display:flex;
+    gap:5px;
+    align-items:center;
+  }
+  .banner-dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.2);
+    cursor:pointer;
+    transition:background .15s, width .15s;
+  }
+  .banner-dot.active{
+    background:var(--accent);
+    width:16px;
+    border-radius:3px;
+  }
+
+  /* Decorative icon right side */
+  .banner-deco{
+    position:absolute;
+    right:14px; bottom:14px;
+    opacity:0.12;
+    pointer-events:none;
+  }
+  .banner-deco svg{ width:70px; height:70px; color:var(--accent); }
+
+  /* ---------- Feed section label ---------- */
+  .feed-section{
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  /* Tabs */
+  .tabs{
+    display:flex;
+    max-width:480px;
+    margin:0 auto;
+    padding:0 16px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:12px 0 11px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text-dim);
+    background:none;
+    border:none;
+    cursor:pointer;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+  }
+
+  .tab svg{ width:14px; height:14px; }
+  .tab.active{ color:var(--text); }
+
+  .tab .indicator{
+    position:absolute;
+    bottom:0; left:50%;
+    transform:translateX(-50%);
+    width:32px; height:3px;
+    border-radius:3px 3px 0 0;
+    background:transparent;
+  }
+
+  .tab.active .indicator{ background:var(--accent); }
+
+  .tab .badge-count{
+    display:inline-block;
+    margin-left:3px;
+    font-size:10px;
+    background:var(--accent-dim);
+    color:var(--accent);
+    border-radius:8px;
+    padding:1px 5px;
+    font-weight:700;
+  }
+
+  /* ---------- Feed container ---------- */
+  .feed{
+    max-width:480px;
+    margin:0 auto;
+    padding-bottom:90px;
+  }
+
+  /* Composer trigger */
+  .composer-trigger{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+
+  .composer-trigger .avatar{
+    width:38px; height:38px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:700; color:var(--accent);
+    flex-shrink:0;
+  }
+
+  .composer-trigger .fake-input{
+    flex:1;
+    background:#0a0817;
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:6px;
+    padding:10px 16px;
+    color:var(--text-dim);
+    font-size:13px;
+    font-family:'Share Tech Mono',monospace;
+  }
+  .drawer-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:60;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease;
+  }
+
+  .drawer-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .drawer{
+    position:fixed;
+    top:0; left:0;
+    height:100%;
+    width:78%;
+    max-width:300px;
+    background:#09071a;
+    border-right:1px solid rgba(0,245,255,0.15);
+    box-shadow:4px 0 30px rgba(0,245,255,0.05);
+    z-index:61;
+    transform:translateX(-100%);
+    transition:transform 0.22s cubic-bezier(0.2,0.8,0.3,1);
+    display:flex;
+    flex-direction:column;
+    padding:max(20px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom));
+  }
+
+  .drawer.open{ transform:translateX(0); }
+
+  .drawer-profile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 18px 18px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:8px;
+  }
+
+  .drawer-profile .avatar{
+    width:46px;height:46px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;font-weight:700;
+    flex-shrink:0;
+  }
+
+  .drawer-profile .info{ min-width:0; }
+
+  .drawer-profile .dname{
+    font-weight:700;
+    font-size:15px;
+    margin-bottom:2px;
+  }
+
+  .drawer-profile .dcode{
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+
+  .drawer-nav{
+    display:flex;
+    flex-direction:column;
+    padding:6px 10px;
+    flex:1;
+    overflow-y:auto;
+  }
+
+  .drawer-link{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 12px;
+    border-radius:10px;
+    background:none;
+    border:none;
+    color:var(--text);
+    font-size:14.5px;
+    font-weight:500;
+    cursor:pointer;
+    text-align:left;
+    width:100%;
+  }
+
+  .drawer-link:hover{ background:var(--border-light); }
+  .drawer-link:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+
+  .drawer-link svg{
+    width:19px;height:19px;
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+
+  .drawer-section-label{
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    font-weight:700;
+    padding:14px 14px 6px;
+  }
+
+  .drawer-link.admin svg{ color:var(--amber); }
+
+  .drawer-footer{
+    padding:10px;
+    border-top:1px solid var(--border);
+  }
+
+  .drawer-link.logout{ color:var(--danger); }
+  .drawer-link.logout svg{ color:var(--danger); }
+
+  /* Tabs */
+  .tabs{
+    display:flex;
+    max-width:480px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:14px 0 12px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-dim);
+    background:none;
+    border:none;
+    cursor:pointer;
+    position:relative;
+  }
+
+  .tab.active{ color:var(--text); }
+
+  .tab .indicator{
+    position:absolute;
+    bottom:0;left:50%;
+    transform:translateX(-50%);
+    width:32px;height:3px;
+    border-radius:3px 3px 0 0;
+    background:transparent;
+  }
+
+  .tab.active .indicator{ background:var(--accent); }
+
+  .tab .badge-count{
+    display:inline-block;
+    margin-left:5px;
+    font-size:11px;
+    background:var(--accent-dim);
+    color:var(--accent);
+    border-radius:8px;
+    padding:1px 6px;
+    font-weight:700;
+  }
+
+  /* ---------- Feed container ---------- */
+  .feed{
+    max-width:480px;
+    margin:0 auto;
+    padding-bottom:90px;
+  }
+
+  /* Composer trigger */
+  .composer-trigger{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+
+  .composer-trigger .avatar{
+    width:38px;height:38px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;color:var(--accent);
+    flex-shrink:0;
+  }
+
+  .composer-trigger .fake-input{
+    flex:1;
+    background:#0a0817;
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:6px;
+    padding:10px 16px;
+    color:var(--text-dim);
+    font-size:13px;
+    font-family:'Share Tech Mono',monospace;
+  }
+
+  /* Post card */
+  .post{
+    padding:14px 16px;
+    border-bottom:1px solid rgba(0,245,255,0.08);
+    display:flex;
+    gap:12px;
+    animation:fadeIn 0.25s ease both;
+  }
+
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .post .avatar{
+    width:42px;height:42px;
+    border-radius:50%;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;
+    background:var(--accent-dim);
+    color:var(--accent);
+  }
+
+  .post.is-announcement .avatar{
+    background:rgba(224,168,71,0.15);
+    color:var(--amber);
+  }
+
+  .post-body{ flex:1; min-width:0; }
+
+  .post-head{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:2px;
+  }
+
+  .post-head .name{
+    font-weight:700;
+    font-size:14.5px;
+  }
+
+  .post-head .meta{
+    color:var(--text-dim);
+    font-size:13px;
+  }
+
+  .announcement-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    background:rgba(245,230,66,0.1);
+    border:1px solid rgba(245,230,66,0.35);
+    color:var(--amber);
+    font-family:'Share Tech Mono',monospace;
+    text-shadow:0 0 6px rgba(245,230,66,0.3);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:2px 8px 2px 6px;
+    border-radius:6px;
+    margin-bottom:6px;
+  }
+
+  .announcement-tag svg{ width:11px; height:11px; }
+
+  .post-text{
+    font-size:14.5px;
+    line-height:1.5;
+    color:var(--text);
+    margin-bottom:10px;
+    word-wrap:break-word;
+  }
+
+  .post-image{
+    width:100%;
+    border-radius:8px;
+    margin-bottom:10px;
+    border:1px solid rgba(0,245,255,0.15);
+    display:block;
+    object-fit:cover;
+  }
+
+  .post-actions{
+    display:flex;
+    align-items:center;
+    gap:28px;
+  }
+
+  .action-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:13px;
+    cursor:pointer;
+    padding:4px 0;
+  }
+
+  .action-btn svg{
+    width:18px;height:18px;
+    transition:transform 0.15s ease;
+  }
+
+  .action-btn:active svg{ transform:scale(0.85); }
+
+  .action-btn.liked{ color:#ec5c7a; }
+  .action-btn.liked svg{ fill:#ec5c7a; stroke:#ec5c7a; }
+
+  .action-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+
+  /* Comments (collapsed inline) */
+  .comments-section{
+    margin-top:10px;
+    border-top:1px solid var(--border);
+    padding-top:10px;
+    display:none;
+  }
+
+  .comments-section.open{ display:block; }
+
+  .comment{
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
+  }
+
+  .comment .avatar{
+    width:28px;height:28px;
+    font-size:11px;
+  }
+
+  .comment-bubble{
+    background:#0a0817;
+    border:1px solid rgba(0,245,255,0.1);
+    border-radius:12px;
+    padding:8px 11px;
+    font-size:13.5px;
+    flex:1;
+  }
+
+  .comment-bubble .c-name{
+    font-weight:700;
+    font-size:12.5px;
+    margin-bottom:2px;
+  }
+
+  .comment-input-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-top:8px;
+  }
+
+  .comment-input-row input{
+    flex:1;
+    background:#080614;
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:16px;
+    padding:9px 14px;
+    font-size:13.5px;
+    color:var(--text);
+    font-family:'Share Tech Mono',monospace;
+  }
+
+  .comment-input-row input::placeholder{ color:#3a3060; }
+
+  .comment-input-row input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 8px rgba(0,245,255,0.15);
+  }
+
+  .comment-send{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    padding:6px;
+    flex-shrink:0;
+  }
+
+  .comment-send:disabled{ color:var(--text-dim); cursor:default; }
+
+  /* Empty state */
+  .empty-state{
+    text-align:center;
+    padding:60px 24px;
+    color:var(--text-dim);
+  }
+
+  .empty-state svg{ width:36px;height:36px; margin-bottom:12px; opacity:0.5; }
+  .empty-state p{ font-size:14px; line-height:1.5; }
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-top:1px solid rgba(0,245,255,0.15);
+    box-shadow:0 -4px 30px rgba(0,245,255,0.05);
+    z-index:30;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav-inner{
+    max-width:480px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:8px 8px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .nav-item{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:10.5px;
+    font-weight:600;
+    cursor:pointer;
+    padding:6px 14px;
+    border-radius:12px;
+  }
+
+  .nav-item svg{ width:22px;height:22px; }
+  .nav-item.active{ color:var(--accent); }
+
+  .nav-dm-badge{
+    position:absolute;
+    top:2px; right:8px;
+    background:var(--accent2);
+    color:#000;
+    font-size:9px; font-weight:800;
+    min-width:15px; height:15px;
+    padding:0 3px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--bg);
+  }
+  .nav-dm-badge.hidden{ display:none; }
+
+  .nav-item.fab{
+    background:transparent;
+    color:var(--accent);
+    border:2px solid var(--accent);
+    width:46px;height:46px;
+    border-radius:8px;
+    margin-top:-14px;
+    box-shadow:0 0 16px rgba(0,245,255,0.4),0 0 40px rgba(0,245,255,0.15);
+    animation:neonPulse 2.5s ease-in-out infinite;
+  }
+
+  .nav-item.fab svg{ width:22px;height:22px; }
+  .nav-item:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* ---------- Composer modal ---------- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    z-index:50;
+    display:none;
+    align-items:flex-end;
+  }
+
+  .modal-overlay.open{ display:flex; }
+
+  @media (min-width:520px){
+    .modal-overlay{ align-items:center; justify-content:center; }
+  }
+
+  .modal{
+    background:#0a081a;
+    border:1px solid rgba(0,245,255,0.2);
+    border-bottom:none;
+    border-radius:16px 16px 0 0;
+    box-shadow:0 -8px 40px rgba(0,245,255,0.08);
+    width:100%;
+    max-width:480px;
+    padding:18px 16px max(18px, env(safe-area-inset-bottom));
+    animation:slideUp 0.2s ease both;
+  }
+
+  @media (min-width:520px){
+    .modal{ border-radius:20px; }
+  }
+
+  @keyframes slideUp{ from{ transform:translateY(30px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+
+  .modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+
+  .modal-head h2{
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--accent);
+    text-shadow:0 0 10px rgba(0,245,255,0.4);
+  }
+
+  .modal-close{
+    background:var(--border-light);
+    border:none;
+    width:30px;height:30px;
+    border-radius:50%;
+    color:var(--text-dim);
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .composer-textarea{
+    width:100%;
+    background:#080614;
+    border:1px solid rgba(0,245,255,0.18);
+    border-radius:14px;
+    padding:14px;
+    color:var(--text);
+    font-size:14.5px;
+    font-family:'Inter',sans-serif;
+    resize:none;
+    min-height:100px;
+    line-height:1.5;
+  }
+
+  .composer-textarea::placeholder{ color:#3a3060; font-family:'Share Tech Mono',monospace; }
+  .composer-textarea:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 12px rgba(0,245,255,0.15); }
+
+  .composer-options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:14px;
+  }
+
+  .announce-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:var(--text-dim);
+    cursor:pointer;
+  }
+
+  .announce-toggle input{ display:none; }
+
+  .toggle-switch{
+    width:36px;height:21px;
+    background:var(--border-light);
+    border-radius:11px;
+    position:relative;
+    transition:background 0.15s ease;
+    flex-shrink:0;
+  }
+
+  .toggle-switch::after{
+    content:'';
+    position:absolute;
+    top:2px;left:2px;
+    width:17px;height:17px;
+    background:var(--text-dim);
+    border-radius:50%;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+
+  .announce-toggle input:checked + .toggle-switch{ background:rgba(224,168,71,0.25); }
+  .announce-toggle input:checked + .toggle-switch::after{ transform:translateX(15px); background:var(--amber); }
+
+  .post-submit{
+    background:transparent;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    border-radius:6px;
+    padding:9px 20px;
+    font-size:11px;
+    font-weight:700;
+    font-family:'Orbitron',sans-serif;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    box-shadow:0 0 10px rgba(0,245,255,0.2);
+    transition:box-shadow 0.2s;
+  }
+  .post-submit:hover{ box-shadow:0 0 20px rgba(0,245,255,0.4); }
+
+  .post-submit:disabled{ background:transparent; border-color:var(--border-light); color:var(--text-dim); cursor:not-allowed; box-shadow:none; }
+
+  /* ---------- Role avatar colors ---------- */
+  .avatar.role-rt      { background:rgba(224,168,71,0.18); color:var(--amber); }
+  .avatar.role-rw      { background:rgba(230,120,50,0.18); color:#e67832; }
+  .avatar.role-lurah   { background:rgba(220,70,80,0.18);  color:#e05060; }
+  .avatar.role-carik   { background:rgba(80,140,220,0.18); color:#508cdc; }
+  .avatar.role-ustadz  { background:rgba(60,180,120,0.18); color:#3cb478; }
+  .avatar.role-admin   { background:rgba(150,90,220,0.18); color:#965adc; }
+  .avatar.role-warga   { background:var(--accent-dim);     color:var(--accent); }
+
+  /* ---------- Verified badges ---------- */
+  .badge-verified{
+    display:inline-flex;
+    align-items:center;
+    flex-shrink:0;
+  }
+  .badge-verified svg{ width:15px;height:15px; }
+
+  /* admin pill */
+  .badge-admin{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    background:rgba(150,90,220,0.15);
+    border:1px solid rgba(150,90,220,0.35);
+    color:#965adc;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:1px 6px;
+    border-radius:5px;
+    line-height:1.6;
+  }
+
+  /* ---------- Composer media ---------- */
+  .composer-media-bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+  }
+
+  .media-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:1px solid rgba(0,245,255,0.2);
+    color:var(--text-dim);
+    border-radius:6px;
+    padding:7px 13px;
+    font-size:11px;
+    font-weight:600;
+    font-family:'Share Tech Mono',monospace;
+    cursor:pointer;
+    transition:border-color .15s, color .15s, box-shadow .15s;
+  }
+
+  .media-btn:hover{ border-color:var(--accent); color:var(--accent); box-shadow:0 0 8px rgba(0,245,255,0.2); }
+  .media-btn svg{ width:15px;height:15px; }
+
+  /* Preview strip */
+  .media-preview-strip{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+
+  .media-thumb{
+    position:relative;
+    width:80px;height:80px;
+    border-radius:6px;
+    overflow:hidden;
+    border:1px solid rgba(0,245,255,0.2);
+    flex-shrink:0;
+  }
+
+  .media-thumb img,
+  .media-thumb video{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .media-thumb .remove-media{
+    position:absolute;
+    top:3px;right:3px;
+    background:rgba(0,0,0,0.7);
+    border:none;
+    border-radius:50%;
+    width:20px;height:20px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:#fff;
+    padding:0;
+  }
+
+  .media-thumb .remove-media svg{ width:11px;height:11px; }
+
+  .media-thumb .video-badge{
+    position:absolute;
+    bottom:4px;left:4px;
+    background:rgba(0,0,0,0.65);
+    border-radius:4px;
+    padding:2px 4px;
+    color:#fff;
+    font-size:9px;
+    font-weight:700;
+  }
+
+  /* Post media display */
+  .post-media{
+    margin-bottom:10px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--border-light);
+  }
+
+  .post-media img{
+    width:100%;
+    display:block;
+    max-height:320px;
+    object-fit:cover;
+  }
+
+  .post-media video{
+    width:100%;
+    display:block;
+    max-height:320px;
+    background:#000;
+  }
+
+  /* multi-media grid */
+  .post-media-grid{
+    display:grid;
+    gap:2px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--border-light);
+    margin-bottom:10px;
+  }
+
+  .post-media-grid.count-2{ grid-template-columns:1fr 1fr; }
+  .post-media-grid.count-3{ grid-template-columns:1fr 1fr; }
+  .post-media-grid.count-3 .grid-item:first-child{ grid-row:span 2; }
+  .post-media-grid.count-4{ grid-template-columns:1fr 1fr; }
+
+  .grid-item{ position:relative; overflow:hidden; aspect-ratio:1/1; }
+  .grid-item img,.grid-item video{ width:100%;height:100%;object-fit:cover;display:block; }
+
+  .grid-item .play-icon{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.3);
+  }
+
+  .grid-item .play-icon svg{ width:28px;height:28px;color:#fff;opacity:0.9; }
+
+  /* ===== REELS PAGE ===== */
+  #reelsPage{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:15;
+    background:#000;
+    overflow:hidden;
+  }
+
+  /* ===== REELS PAGE — GRID VIEW ===== */
+  #reelsGridView{
+    width:100%;
+    height:100%;
+    height:100dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    background:var(--bg);
+    padding-bottom:90px;
+  }
+
+  .reels-grid-topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 12px;
+    position:sticky;
+    top:0;
+    z-index:6;
+    background:rgba(6,5,15,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.12);
+  }
+
+  .reels-grid-brand{ display:flex; flex-direction:column; line-height:1; flex-shrink:0; }
+  .reels-grid-logo{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:18px;
+    letter-spacing:0.5px;
+    color:var(--text);
+  }
+  .reels-grid-logo .num{ color:var(--accent); text-shadow:0 0 10px rgba(0,245,255,0.5); }
+  .reels-grid-sub{
+    font-family:'Share Tech Mono',monospace;
+    font-size:9px;
+    letter-spacing:3px;
+    color:var(--text-dim);
+    margin-top:1px;
+  }
+
+  .reels-grid-live{
+    display:flex; align-items:center; gap:6px;
+    background:rgba(61,220,151,0.1);
+    border:1px solid rgba(61,220,151,0.35);
+    color:#3ddc97;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    padding:6px 11px;
+    border-radius:20px;
+    flex-shrink:0;
+  }
+  .reels-grid-live .live-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:#3ddc97;
+    box-shadow:0 0 6px #3ddc97;
+    animation:livePulse 1.4s ease-in-out infinite;
+  }
+  @keyframes livePulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  .reels-grid-search{
+    margin-left:auto;
+    width:34px;height:34px;
+    border-radius:50%;
+    background:rgba(0,245,255,0.05);
+    border:1px solid rgba(0,245,255,0.2);
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .reels-grid-search svg{ width:16px;height:16px; }
+
+  .reels-filter-row{
+    display:flex;
+    gap:8px;
+    padding:12px 16px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .reels-filter-row::-webkit-scrollbar{ display:none; }
+
+  .reels-filter-chip{
+    display:flex; align-items:center; gap:6px;
+    flex-shrink:0;
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:12.5px;
+    font-weight:700;
+    white-space:nowrap;
+    cursor:pointer;
+    border:1px solid var(--border-light);
+    background:rgba(255,255,255,0.02);
+    color:var(--text-dim);
+    transition:all .15s;
+  }
+  .reels-filter-chip svg{ width:13px;height:13px; }
+  .reels-filter-chip.active{
+    background:rgba(0,245,255,0.12);
+    border-color:var(--accent);
+    color:var(--accent);
+    box-shadow:0 0 10px rgba(0,245,255,0.15);
+  }
+
+  .reels-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+    padding:0 10px;
+  }
+
+  .reels-upload-fab{
+    position:fixed;
+    right:18px;
+    bottom:96px;
+    z-index:8;
+    width:52px;height:52px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#06150f;
+    border:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    box-shadow:0 0 18px rgba(0,245,255,0.45), 0 4px 14px rgba(0,0,0,0.4);
+  }
+  .reels-upload-fab svg{ width:22px;height:22px; }
+
+  .reels-grid-item{
+    position:relative;
+    aspect-ratio:9/14;
+    border-radius:10px;
+    overflow:hidden;
+    background:#0a0816;
+    border:1px solid var(--border-light);
+    cursor:pointer;
+  }
+
+  .reels-grid-item img,
+  .reels-grid-item .grid-thumb-fallback{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+
+  .grid-thumb-fallback{
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#0d1a14 0%,#0a1520 50%,#140d1a 100%);
+  }
+  .grid-thumb-fallback svg{ width:30px;height:30px;color:rgba(255,255,255,0.1); }
+
+  .reels-grid-item::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 60%, rgba(0,0,0,0.75) 100%);
+    pointer-events:none;
+  }
+
+  .grid-tag{
+    position:absolute;
+    top:6px; left:6px;
+    z-index:2;
+    display:flex; align-items:center; gap:4px;
+    padding:4px 7px;
+    border-radius:7px;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:0.3px;
+    text-transform:uppercase;
+    backdrop-filter:blur(4px);
+  }
+  .grid-tag svg{ width:9px;height:9px; }
+
+  .grid-duration{
+    position:absolute;
+    top:6px; right:6px;
+    z-index:2;
+    background:rgba(0,0,0,0.55);
+    color:#fff;
+    font-size:9.5px;
+    font-weight:700;
+    font-family:'Share Tech Mono',monospace;
+    padding:2.5px 6px;
+    border-radius:5px;
+  }
+
+  .grid-menu-dot{
+    position:absolute;
+    top:5px; right:5px;
+    z-index:2;
+    color:rgba(255,255,255,0.6);
+  }
+
+  .grid-stats{
+    position:absolute;
+    bottom:6px; left:6px; right:6px;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#fff;
+  }
+  .grid-stat{
+    display:flex; align-items:center; gap:3px;
+    font-size:10.5px;
+    font-weight:700;
+  }
+  .grid-stat svg{ width:11px;height:11px; }
+
+  /* Tag color variants */
+  .grid-tag.tag-kerjabakti{ background:rgba(61,220,151,0.22); color:#3ddc97; }
+  .grid-tag.tag-pengajian{ background:rgba(150,90,220,0.25); color:#b18aff; }
+  .grid-tag.tag-17agustus{ background:rgba(245,176,40,0.25); color:#f5b028; }
+  .grid-tag.tag-kasrt{ background:rgba(80,140,220,0.25); color:#6fa8e8; }
+  .grid-tag.tag-infowarga{ background:rgba(0,245,255,0.18); color:var(--accent); }
+  .grid-tag.tag-rapat{ background:rgba(226,101,79,0.22); color:#e2654f; }
+
+  /* Back button (player view) */
+  .reel-back-btn{
+    position:absolute;
+    top:max(14px, env(safe-area-inset-top));
+    left:14px;
+    z-index:11;
+    width:36px;height:36px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .reel-back-btn svg{ width:18px;height:18px; }
+
+  #reelsPlayerView{
+    display:none;
+    width:100%;
+    height:100%;
+    height:100dvh;
+    position:relative;
+  }
+
+  .reels-container{
+    width:100%;
+    height:100%;
+    height:100dvh;
+    overflow-y:scroll;
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .reels-container::-webkit-scrollbar{ display:none; }
+
+  .reel-item{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    overflow:hidden;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .reel-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  /* Gradient overlays */
+  .reel-item::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 25%, transparent 55%, rgba(0,0,0,0.75) 100%);
+    z-index:2;
+    pointer-events:none;
+  }
+
+  /* Top bar inside reel */
+  .reel-topbar{
+    position:absolute;
+    top:0;left:0;right:0;
+    z-index:10;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:max(14px, env(safe-area-inset-top)) 16px 14px;
+  }
+
+  .reel-topbar-title{
+    font-family:'Archivo',sans-serif;
+    font-weight:800;
+    font-size:17px;
+    color:#fff;
+    letter-spacing:-0.3px;
+  }
+
+  .reel-upload-btn{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.2);
+    color:#fff;
+    border-radius:20px;
+    padding:7px 13px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .reel-upload-btn svg{ width:14px;height:14px; }
+
+  /* Bottom info */
+  .reel-info{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    z-index:5;
+    padding:0 16px max(24px, env(safe-area-inset-bottom)) 16px;
+    padding-bottom:calc(max(24px, env(safe-area-inset-bottom)) + 70px);
+  }
+
+  .reel-user{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:10px;
+  }
+
+  .reel-avatar{
+    width:38px;height:38px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:14px;
+    border:2px solid rgba(255,255,255,0.3);
+    flex-shrink:0;
+  }
+
+  .reel-username{
+    font-weight:700;
+    font-size:14px;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+
+  .reel-caption{
+    font-size:13.5px;
+    color:rgba(255,255,255,0.88);
+    line-height:1.5;
+    margin-bottom:0;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  .reel-meta-card{
+    display:inline-flex;
+    flex-direction:column;
+    gap:7px;
+    background:rgba(0,10,12,0.55);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(0,245,255,0.3);
+    border-radius:14px;
+    padding:11px 14px;
+    margin-bottom:12px;
+    box-shadow:0 0 16px rgba(0,245,255,0.08);
+  }
+  .reel-meta-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .reel-meta-row svg{ width:14px;height:14px;flex-shrink:0; }
+
+  /* Right action bar */
+  .reel-actions{
+    position:absolute;
+    right:14px;
+    bottom:calc(max(24px, env(safe-area-inset-bottom)) + 80px);
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+
+  .reel-action-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    background:none;
+    border:none;
+    color:#fff;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .reel-action-icon{
+    width:44px;height:44px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(6px);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .reel-action-icon svg{ width:22px;height:22px; }
+
+  .reel-action-btn span{
+    font-size:12px;
+    font-weight:700;
+    color:rgba(255,255,255,0.9);
+    text-shadow:0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .reel-action-btn.liked .reel-action-icon{
+    background:rgba(226,101,79,0.25);
+  }
+  .reel-action-btn.liked svg{ color:var(--danger); }
+
+  /* Play/pause overlay */
+  .reel-play-overlay{
+    position:absolute;
+    inset:0;
+    z-index:4;
+    display:flex;align-items:center;justify-content:center;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .2s;
+  }
+
+  .reel-play-overlay.show{ opacity:1; }
+
+  .reel-play-overlay svg{
+    width:64px;height:64px;
+    color:#fff;
+    filter:drop-shadow(0 2px 12px rgba(0,0,0,0.5));
+  }
+
+  /* Empty reels */
+  .reels-empty{
+    position:absolute;
+    inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:14px;
+    color:rgba(255,255,255,0.5);
+    text-align:center;
+    padding:24px;
+  }
+
+  .reels-empty svg{ width:52px;height:52px;opacity:0.3; }
+  .reels-empty p{ font-size:15px;line-height:1.6; }
+
+  .reels-empty-btn{
+    display:flex;align-items:center;gap:7px;
+    background:var(--accent);
+    color:#06150f;
+    border:none;border-radius:14px;
+    padding:13px 24px;
+    font-size:14px;font-weight:700;
+    cursor:pointer;
+    margin-top:4px;
+  }
+
+  /* Demo placeholder bg */
+  .reel-placeholder-bg{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ===== DM PAGE ===== */
+  #dmPage{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:15;
+    background:var(--bg);
+  }
+
+  #dmListView, #dmThreadView{
+    width:100%;
+    height:100%;
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  #dmThreadView{ display:none; }
+
+  .dm-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:max(14px, env(safe-area-inset-top)) 16px 12px;
+    border-bottom:1px solid rgba(0,245,255,0.12);
+    flex-shrink:0;
+  }
+  .dm-topbar-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    letter-spacing:0.5px;
+    color:var(--text);
+  }
+  .dm-new-btn{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:rgba(0,245,255,0.08);
+    border:1px solid rgba(0,245,255,0.3);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .dm-new-btn svg{ width:16px;height:16px; }
+
+  .dm-search-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:12px 16px;
+    padding:9px 14px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-light);
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  .dm-search-wrap svg{ width:15px;height:15px;flex-shrink:0; }
+  .dm-search-input{
+    background:none;border:none;outline:none;
+    color:var(--text);
+    font-size:13.5px;
+    width:100%;
+    font-family:inherit;
+  }
+  .dm-search-input::placeholder{ color:var(--text-dim); }
+
+  .dm-list{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:90px;
+  }
+
+  .dm-list-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 16px;
+    cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .dm-list-item:active{ background:rgba(0,245,255,0.04); }
+
+  .dm-avatar{
+    position:relative;
+    width:48px;height:48px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:16px;
+    flex-shrink:0;
+    border:2px solid rgba(255,255,255,0.12);
+  }
+  .dm-avatar .dm-online-dot{
+    position:absolute;
+    bottom:-1px; right:-1px;
+    width:11px;height:11px;
+    background:#3ddc97;
+    border-radius:50%;
+    border:2px solid var(--bg);
+  }
+
+  .dm-list-body{
+    flex:1;
+    min-width:0;
+  }
+  .dm-list-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:2px;
+  }
+  .dm-list-name{
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    gap:5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dm-list-time{
+    font-size:11px;
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  .dm-list-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .dm-list-preview{
+    font-size:13px;
+    color:var(--text-dim);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dm-list-item.unread .dm-list-preview{ color:var(--text); font-weight:500; }
+  .dm-list-item.unread .dm-list-name{ color:#fff; }
+
+  .dm-unread-badge{
+    flex-shrink:0;
+    min-width:18px; height:18px;
+    padding:0 4px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#06150f;
+    font-size:10.5px;
+    font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .dm-empty{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:60px 24px;
+    color:var(--text-dim);
+    text-align:center;
+  }
+  .dm-empty svg{ width:44px;height:44px;opacity:0.3; }
+
+  /* Thread view */
+  .dm-thread-topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:max(14px, env(safe-area-inset-top)) 16px 12px;
+    border-bottom:1px solid rgba(0,245,255,0.12);
+    flex-shrink:0;
+  }
+  .dm-back-btn{
+    width:32px;height:32px;
+    border-radius:50%;
+    background:none;
+    border:none;
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .dm-back-btn svg{ width:19px;height:19px; }
+
+  .dm-thread-avatar{
+    width:36px;height:36px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:13px;
+    flex-shrink:0;
+    border:2px solid rgba(255,255,255,0.12);
+  }
+
+  .dm-thread-info{ min-width:0; flex:1; }
+  .dm-thread-name{
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--text);
+    display:flex;align-items:center;gap:5px;
+  }
+  .dm-thread-status{
+    font-size:11.5px;
+    color:#3ddc97;
+  }
+
+  .dm-messages{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .dm-msg-row{
+    display:flex;
+    max-width:78%;
+  }
+  .dm-msg-row.out{ align-self:flex-end; }
+  .dm-msg-row.in{ align-self:flex-start; }
+
+  .dm-msg-bubble{
+    padding:9px 13px;
+    border-radius:14px;
+    font-size:13.5px;
+    line-height:1.45;
+    word-break:break-word;
+  }
+  .dm-msg-row.in .dm-msg-bubble{
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--border-light);
+    color:var(--text);
+    border-bottom-left-radius:4px;
+  }
+  .dm-msg-row.out .dm-msg-bubble{
+    background:rgba(0,245,255,0.14);
+    border:1px solid rgba(0,245,255,0.35);
+    color:#dffeff;
+    border-bottom-right-radius:4px;
+  }
+
+  .dm-composer{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 14px max(10px, env(safe-area-inset-bottom));
+    border-top:1px solid rgba(0,245,255,0.12);
+    flex-shrink:0;
+  }
+  .dm-composer-input{
+    flex:1;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-light);
+    border-radius:20px;
+    padding:10px 16px;
+    color:var(--text);
+    font-size:13.5px;
+    outline:none;
+    font-family:inherit;
+  }
+  .dm-composer-input::placeholder{ color:var(--text-dim); }
+  .dm-send-btn{
+    width:38px;height:38px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#06150f;
+    border:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    box-shadow:0 0 10px rgba(0,245,255,0.3);
+  }
+  .dm-send-btn svg{ width:16px;height:16px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <button class="hamburger-btn" id="openDrawer" aria-label="Buka menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="brand-block">
+          <div class="brand-row">
+            <span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            <span class="brand-name">RT <span class="num">37</span> Network</span>
+          </div>
+          <div class="brand-loc">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Kel. Kidangbang, Dsn. Kidang Berik
+          </div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="notif-btn" aria-label="Notifikasi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-badge">2</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero: banner -->
+  <div class="hero">
+  </div>
+
+  <!-- Banner pengumuman penting -->
+  <div class="banner-wrap">
+    <div class="banner">
+      <div class="banner-eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 11l18-5v12L3 13z"/><path d="M11 13.5V18a2 2 0 0 0 4 0v-1"/></svg>
+        Pengumuman Penting
+      </div>
+      <div class="banner-title">Kerja Bakti Minggu</div>
+      <div class="banner-desc">Mohon kehadiran seluruh warga, terutama perwakilan tiap KK.</div>
+      <div class="banner-meta">
+        <div class="banner-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          22 Juni 2025<strong>Minggu</strong>
+        </div>
+        <div class="banner-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          07:00 WIB<strong>Pagi</strong>
+        </div>
+        <div class="banner-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Lapangan RT 37 <strong>Kidangbang</strong>
+        </div>
+      </div>
+      <div class="banner-footer">
+        <button class="banner-btn">
+          Lihat Detail
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="banner-dots">
+          <div class="banner-dot active"></div>
+          <div class="banner-dot"></div>
+          <div class="banner-dot"></div>
+          <div class="banner-dot"></div>
+        </div>
+      </div>
+      <div class="banner-deco">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11l18-5v12L3 13z"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feed tabs + posts -->
+  <div class="tabs">
+    <button class="tab active" data-tab="semua">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Semua
+      <span class="indicator"></span>
+    </button>
+    <button class="tab" data-tab="pengumuman">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 13z"/></svg>
+      Pengumuman <span class="badge-count" id="annCount">2</span>
+      <span class="indicator"></span>
+    </button>
+    <button class="tab" data-tab="agenda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Agenda
+      <span class="indicator"></span>
+    </button>
+  </div>
+
+  <div class="feed">
+    <div class="composer-trigger" id="openComposer">
+      <div class="avatar" id="composerAvatar">?</div>
+      <div class="fake-input">Apa yang mau dibagikan ke warga?</div>
+    </div>
+
+    <div id="postList"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <p>Belum ada pengumuman saat ini.</p>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="nav-item active" aria-label="Beranda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Beranda
+      </button>
+      <button class="nav-item" aria-label="Warga">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 1 0 0-8"/><path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M17 11c2.2 0 4 1.8 4 4v2"/></svg>
+        Warga
+      </button>
+      <button class="nav-item fab" id="fabCompose" aria-label="Buat post baru">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="nav-item" id="navReels" aria-label="Reels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        Reels
+      </button>
+      <button class="nav-item" id="navDM" aria-label="Pesan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+        Pesan
+        <span class="nav-dm-badge" id="navDmBadge">3</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Side Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-profile" onclick="window.location.href='profile.html'" style="cursor:pointer;">
+      <div class="avatar">Y</div>
+      <div class="info">
+        <div class="dname">Yolina</div>
+        <div class="dcode">Kode: RT37-014</div>
+      </div>
+    </div>
+
+    <nav class="drawer-nav">
+      <button class="drawer-link" data-nav="profil" onclick="window.location.href='profile.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profil saya
+      </button>
+      <button class="drawer-link" data-nav="warga">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 1 0 0-8"/><path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M17 11c2.2 0 4 1.8 4 4v2"/></svg>
+        Data warga
+      </button>
+      <button class="drawer-link" data-nav="kegiatan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Kegiatan
+      </button>
+      <button class="drawer-link" data-nav="tabungan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+        Kas &amp; tabungan
+      </button>
+      <button class="drawer-link" data-nav="galeri">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Galeri
+      </button>
+
+      <div class="drawer-section-label">Pengurus</div>
+      <button class="drawer-link admin" data-nav="admin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></svg>
+        Panel admin
+      </button>
+    </nav>
+
+    <div class="drawer-footer">
+      <button class="drawer-link logout" data-nav="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Keluar
+      </button>
+    </div>
+  </div>
+
+  <!-- Composer Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Buat post</h2>
+        <button class="modal-close" id="closeModal" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <textarea class="composer-textarea" id="newPostText" placeholder="Tulis sesuatu untuk warga RT 37... (info kegiatan, proposal, atau obrolan biasa)"></textarea>
+
+      <!-- Media preview strip -->
+      <div class="media-preview-strip" id="mediaPreviewStrip"></div>
+
+      <!-- Media upload bar -->
+      <div class="composer-media-bar">
+        <button class="media-btn" id="addImageBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Foto
+        </button>
+        <button class="media-btn" id="addVideoBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Video
+        </button>
+      </div>
+
+      <!-- Hidden file inputs -->
+      <input type="file" id="fileInputImage" accept="image/*" multiple style="display:none">
+      <input type="file" id="fileInputVideo" accept="video/*" style="display:none">
+
+      <div class="composer-options">
+        <label class="announce-toggle">
+          <input type="checkbox" id="markAnnouncement">
+          <span class="toggle-switch"></span>
+          Tandai sebagai pengumuman
+        </label>
+        <button class="post-submit" id="submitPost" disabled>Posting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REELS PAGE ===== -->
+  <div id="reelsPage">
+
+    <!-- Grid view -->
+    <div id="reelsGridView">
+      <div class="reels-grid-topbar">
+        <div class="reels-grid-brand">
+          <span class="reels-grid-logo">RT<span class="num">37</span></span>
+          <span class="reels-grid-sub">REELS</span>
+        </div>
+        <div class="reels-grid-live">
+          <span class="live-dot"></span>LIVE WARGA
+        </div>
+        <button class="reels-grid-search" aria-label="Cari">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
+
+      <div class="reels-filter-row" id="reelsFilterRow"></div>
+
+      <div class="reels-grid" id="reelsGrid"></div>
+
+      <button class="reels-upload-fab" id="reelsUploadFab" aria-label="Upload Reels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+
+      <input type="file" id="reelsFileInput" accept="video/*" style="display:none">
+    </div>
+
+    <!-- Player (full-screen) view -->
+    <div id="reelsPlayerView">
+      <button class="reel-back-btn" id="reelBackBtn" aria-label="Kembali ke grid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="reels-container" id="reelsContainer"></div>
+    </div>
+
+  </div>
+
+  <!-- ===== DM PAGE ===== -->
+  <div id="dmPage">
+
+    <!-- DM list view -->
+    <div id="dmListView">
+      <div class="dm-topbar">
+        <span class="dm-topbar-title">Pesan</span>
+        <button class="dm-new-btn" aria-label="Pesan baru">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="dm-search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="dm-search-input" placeholder="Cari percakapan...">
+      </div>
+      <div class="dm-list" id="dmList"></div>
+    </div>
+
+    <!-- Chat thread view -->
+    <div id="dmThreadView">
+      <div class="dm-thread-topbar">
+        <button class="dm-back-btn" id="dmBackBtn" aria-label="Kembali">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="dm-thread-avatar" id="dmThreadAvatar"></div>
+        <div class="dm-thread-info">
+          <div class="dm-thread-name" id="dmThreadName"></div>
+          <div class="dm-thread-status" id="dmThreadStatus"></div>
+        </div>
+      </div>
+      <div class="dm-messages" id="dmMessages"></div>
+      <div class="dm-composer">
+        <input type="text" class="dm-composer-input" id="dmComposerInput" placeholder="Tulis pesan...">
+        <button class="dm-send-btn" id="dmSendBtn" aria-label="Kirim">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ---------- Session user ----------
+  const sessionRaw = sessionStorage.getItem('rt37_user');
+  if(!sessionRaw) window.location.href = 'login.html';
+  const _u = JSON.parse(sessionRaw || '{}');
+  const currentUser = {
+    nama: _u.nama || 'Warga',
+    kode: _u.kode || '',
+    role: _u.role || 'warga',
+    initial: (_u.nama || 'W').charAt(0).toUpperCase()
+  };
+
+  // Update DOM with session user
+  document.addEventListener('DOMContentLoaded', () => {
+    const drawerAvatar = document.getElementById('drawerAvatar');
+    const drawerNama = document.getElementById('drawerNama');
+    const drawerKode = document.getElementById('drawerKode');
+    const composerAvatar = document.getElementById('composerAvatar');
+    if(drawerAvatar) drawerAvatar.textContent = currentUser.initial;
+    if(drawerNama) drawerNama.textContent = currentUser.nama;
+    if(drawerKode) drawerKode.textContent = 'Kode: ' + currentUser.kode;
+    if(composerAvatar){
+      composerAvatar.textContent = currentUser.initial;
+      composerAvatar.className = 'avatar role-' + currentUser.role;
+    }
+  });
+
+  // ---------- Dummy data, nanti diganti dari backend ----------
+  // role: 'warga' | 'rt' | 'rw' | 'lurah' | 'carik' | 'ustadz' | 'admin'
+  let posts = [
+    {
+      id: 4,
+      name: 'Pak RT',
+      initial: 'R',
+      role: 'rt',
+      isAnnouncement: true,
+      time: '10 menit lalu',
+      text: 'Pengumuman: Kerja bakti bersama akan dilaksanakan Minggu pagi jam 07:00 di lapangan RT. Mohon kehadiran seluruh warga, terutama perwakilan tiap KK.',
+      image: null,
+      likes: 12,
+      liked: false,
+      comments: [
+        { name: 'Budi', initial: 'B', role: 'warga', text: 'Siap pak, hadir!' }
+      ],
+      commentsOpen: false
+    },
+    {
+      id: 3,
+      name: 'Sari',
+      initial: 'S',
+      role: 'warga',
+      isAnnouncement: false,
+      time: '32 menit lalu',
+      text: 'Proposal buat acara 17an udah aku susun, ada yang mau tambahin lomba apa lagi? Sejauh ini ada balap karung, makan kerupuk, sama panjat pinang 🎉',
+      image: null,
+      likes: 8,
+      liked: true,
+      comments: [
+        { name: 'Dimas', initial: 'D', role: 'warga', text: 'Tambahin tarik tambang dong' },
+        { name: 'Wulan', initial: 'W', role: 'warga', text: 'Setuju sama Dimas, seru tuh' }
+      ],
+      commentsOpen: false
+    },
+    {
+      id: 2,
+      name: 'Pak Lurah',
+      initial: 'L',
+      role: 'lurah',
+      isAnnouncement: true,
+      time: '2 jam lalu',
+      text: 'Iuran kas bulan ini sudah bisa dibayarkan ke bendahara RT mulai tanggal 20. Terima kasih atas partisipasi warga selama ini 🙏',
+      image: null,
+      likes: 19,
+      liked: false,
+      comments: [],
+      commentsOpen: false
+    },
+    {
+      id: 1,
+      name: 'Dimas',
+      initial: 'D',
+      role: 'warga',
+      isAnnouncement: false,
+      time: '5 jam lalu',
+      text: 'Ada yang punya bor listrik gak ya, mau pinjem buat pasang rak. Hehe',
+      image: null,
+      likes: 3,
+      liked: false,
+      comments: [
+        { name: 'Sari', initial: 'S', role: 'warga', text: 'Aku ada, nanti tar malam ke rumah ya' }
+      ],
+      commentsOpen: false
+    }
+  ];
+
+  let activeTab = 'semua';
+
+  const postList = document.getElementById('postList');
+  const emptyState = document.getElementById('emptyState');
+  const annCount = document.getElementById('annCount');
+
+  const PERANGKAT_DESA = ['rt','rw','lurah','carik','ustadz'];
+
+  function avatarClass(role){ return 'avatar role-' + (role || 'warga'); }
+
+  function badgeHtml(role){
+    if(role === 'admin'){
+      return `<span class="badge-admin">Admin</span>`;
+    }
+    if(PERANGKAT_DESA.includes(role)){
+      // gold checkmark
+      return `<span class="badge-verified" title="Perangkat Desa">
+        <svg viewBox="0 0 24 24" fill="#e0a847"><path d="M12 1l2.6 2.4 3.4-.6 1 3.3 3.3 1-.6 3.4L24 12.5l-2.3 2.4.6 3.4-3.3 1-1 3.3-3.4-.6L12 24l-2.6-2.4-3.4.6-1-3.3-3.3-1 .6-3.4L0 12.5l2.3-2.4-.6-3.4 3.3-1 1-3.3 3.4.6z"/><path d="M9 12.5l2 2 4-4.5" stroke="#06150f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>`;
+    }
+    // warga — green checkmark
+    return `<span class="badge-verified" title="Warga Terverifikasi">
+      <svg viewBox="0 0 24 24" fill="#3ddc97"><path d="M12 1l2.6 2.4 3.4-.6 1 3.3 3.3 1-.6 3.4L24 12.5l-2.3 2.4.6 3.4-3.3 1-1 3.3-3.4-.6L12 24l-2.6-2.4-3.4.6-1-3.3-3.3-1 .6-3.4L0 12.5l2.3-2.4-.6-3.4 3.3-1 1-3.3 3.4.6z"/><path d="M9 12.5l2 2 4-4.5" stroke="#06150f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>`;
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function mediaHtml(p){
+    const media = p.media || (p.image ? [{type:'image', dataUrl: p.image}] : []);
+    if(!media.length) return '';
+    if(media.length === 1){
+      const m = media[0];
+      return `<div class="post-media">
+        ${m.type === 'video'
+          ? `<video src="${m.dataUrl}" controls playsinline></video>`
+          : `<img src="${m.dataUrl}" alt="foto postingan" loading="lazy">`}
+      </div>`;
+    }
+    const count = Math.min(media.length, 4);
+    const items = media.slice(0, count).map((m, i) => {
+      const isExtra = i === 3 && media.length > 4;
+      return `<div class="grid-item">
+        ${m.type === 'video'
+          ? `<video src="${m.dataUrl}" muted></video><div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg></div>`
+          : `<img src="${m.dataUrl}" alt="" loading="lazy">`}
+        ${isExtra ? `<div class="play-icon" style="background:rgba(0,0,0,0.55);font-size:18px;font-weight:700;color:#fff;">+${media.length - 3}</div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="post-media-grid count-${count}">${items}</div>`;
+  }
+
+  function renderPosts(){
+    const filtered = activeTab === 'pengumuman'
+      ? posts.filter(p => p.isAnnouncement)
+      : posts;
+
+    annCount.textContent = posts.filter(p => p.isAnnouncement).length;
+
+    if(filtered.length === 0){
+      postList.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    postList.innerHTML = filtered.map(p => `
+      <div class="post ${p.isAnnouncement ? 'is-announcement' : ''}" data-id="${p.id}">
+        <div class="${avatarClass(p.role)}">${p.initial}</div>
+        <div class="post-body">
+          ${p.isAnnouncement ? `
+            <div class="announcement-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 11l18-5v12L3 13z"/><path d="M11 13.5V18a2 2 0 0 0 4 0v-1"/></svg>
+              Pengumuman RT
+            </div>
+          ` : ''}
+          <div class="post-head">
+            <span class="name">${escapeHtml(p.name)}</span>
+            ${badgeHtml(p.role)}
+            <span class="meta">&middot; ${p.time}</span>
+          </div>
+          <p class="post-text">${escapeHtml(p.text)}</p>
+          ${mediaHtml(p)}
+          <div class="post-actions">
+            <button class="action-btn like-btn ${p.liked ? 'liked' : ''}" data-id="${p.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              <span>${p.likes}</span>
+            </button>
+            <button class="action-btn comment-toggle-btn" data-id="${p.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6 8.38 8.38 0 0 1 5.4-1.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>${p.comments.length}</span>
+            </button>
+          </div>
+
+          <div class="comments-section ${p.commentsOpen ? 'open' : ''}" id="comments-${p.id}">
+            ${p.comments.map(c => `
+              <div class="comment">
+                <div class="${avatarClass(c.role)}">${c.initial || c.name.charAt(0)}</div>
+                <div class="comment-bubble">
+                  <div class="c-name" style="display:flex;align-items:center;gap:4px;">
+                    ${escapeHtml(c.name)}${badgeHtml(c.role)}
+                  </div>
+                  ${escapeHtml(c.text)}
+                </div>
+              </div>
+            `).join('')}
+            <div class="comment-input-row">
+              <input type="text" placeholder="Tulis komentar..." class="comment-input" data-id="${p.id}">
+              <button class="comment-send" data-id="${p.id}">Kirim</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      if(tab.dataset.tab === 'reels-tab'){
+        showReels();
+        return;
+      }      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTab = tab.dataset.tab;
+      renderPosts();
+    });
+  });
+
+  // Like toggle
+  postList.addEventListener('click', (e) => {
+    const likeBtn = e.target.closest('.like-btn');
+    if(likeBtn){
+      const id = Number(likeBtn.dataset.id);
+      const post = posts.find(p => p.id === id);
+      post.liked = !post.liked;
+      post.likes += post.liked ? 1 : -1;
+      renderPosts();
+      return;
+    }
+
+    const commentToggle = e.target.closest('.comment-toggle-btn');
+    if(commentToggle){
+      const id = Number(commentToggle.dataset.id);
+      const post = posts.find(p => p.id === id);
+      post.commentsOpen = !post.commentsOpen;
+      renderPosts();
+      return;
+    }
+
+    const sendBtn = e.target.closest('.comment-send');
+    if(sendBtn){
+      const id = Number(sendBtn.dataset.id);
+      const input = document.querySelector(`.comment-input[data-id="${id}"]`);
+      const text = input.value.trim();
+      if(!text) return;
+      const post = posts.find(p => p.id === id);
+      post.comments.push({ name: currentUser.nama, initial: currentUser.initial, role: currentUser.role, text });
+      renderPosts();
+    }
+  });
+
+  // Enter key to send comment
+  postList.addEventListener('keydown', (e) => {
+    if(e.target.classList.contains('comment-input') && e.key === 'Enter'){
+      const id = Number(e.target.dataset.id);
+      const text = e.target.value.trim();
+      if(!text) return;
+      const post = posts.find(p => p.id === id);
+      post.comments.push({ name: currentUser.nama, initial: currentUser.initial, role: currentUser.role, text });
+      renderPosts();
+    }
+  });
+
+  // ---------- Composer modal ----------
+  const modalOverlay     = document.getElementById('modalOverlay');
+  const newPostText      = document.getElementById('newPostText');
+  const submitPost       = document.getElementById('submitPost');
+  const markAnnouncement = document.getElementById('markAnnouncement');
+  const mediaPreviewStrip = document.getElementById('mediaPreviewStrip');
+  const fileInputImage   = document.getElementById('fileInputImage');
+  const fileInputVideo   = document.getElementById('fileInputVideo');
+
+  // Pending media: [{type:'image'|'video', dataUrl, name}]
+  let pendingMedia = [];
+
+  function checkSubmitEnabled(){
+    submitPost.disabled = newPostText.value.trim().length === 0 && pendingMedia.length === 0;
+  }
+
+  function renderPreviewStrip(){
+    mediaPreviewStrip.innerHTML = pendingMedia.map((m, i) => `
+      <div class="media-thumb">
+        ${m.type === 'image'
+          ? `<img src="${m.dataUrl}" alt="">`
+          : `<video src="${m.dataUrl}" muted></video><div class="video-badge">VIDEO</div>`}
+        <button class="remove-media" data-idx="${i}" aria-label="Hapus">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    `).join('');
+
+    mediaPreviewStrip.querySelectorAll('.remove-media').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingMedia.splice(Number(btn.dataset.idx), 1);
+        renderPreviewStrip();
+        checkSubmitEnabled();
+      });
+    });
+  }
+
+  function readFile(file, type){
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve({ type, dataUrl: e.target.result, name: file.name });
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('addImageBtn').addEventListener('click', () => fileInputImage.click());
+  document.getElementById('addVideoBtn').addEventListener('click', () => fileInputVideo.click());
+
+  fileInputImage.addEventListener('change', async () => {
+    const files = Array.from(fileInputImage.files);
+    const reads = await Promise.all(files.map(f => readFile(f, 'image')));
+    pendingMedia.push(...reads);
+    renderPreviewStrip();
+    checkSubmitEnabled();
+    fileInputImage.value = '';
+  });
+
+  fileInputVideo.addEventListener('change', async () => {
+    const files = Array.from(fileInputVideo.files);
+    const reads = await Promise.all(files.map(f => readFile(f, 'video')));
+    pendingMedia.push(...reads);
+    renderPreviewStrip();
+    checkSubmitEnabled();
+    fileInputVideo.value = '';
+  });
+
+  function openModal(){
+    modalOverlay.classList.add('open');
+    setTimeout(() => newPostText.focus(), 50);
+  }
+  function closeModal(){
+    modalOverlay.classList.remove('open');
+    newPostText.value = '';
+    markAnnouncement.checked = false;
+    pendingMedia = [];
+    renderPreviewStrip();
+    submitPost.disabled = true;
+  }
+
+  document.getElementById('openComposer').addEventListener('click', openModal);
+  document.getElementById('fabCompose').addEventListener('click', openModal);
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
+
+  newPostText.addEventListener('input', checkSubmitEnabled);
+
+  submitPost.addEventListener('click', () => {
+    const text = newPostText.value.trim();
+    if(!text && pendingMedia.length === 0) return;
+
+    posts.unshift({
+      id: Date.now(),
+      name: currentUser.nama,
+      initial: currentUser.initial,
+      role: 'warga',
+      isAnnouncement: markAnnouncement.checked,
+      time: 'Baru saja',
+      text,
+      media: [...pendingMedia],
+      likes: 0,
+      liked: false,
+      comments: [],
+      commentsOpen: false
+    });
+
+    closeModal();
+    activeTab = 'semua';
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.tab[data-tab="semua"]').classList.add('active');
+    renderPosts();
+  });
+
+  renderPosts();
+
+  // ---------- Side drawer ----------
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const openDrawerBtn = document.getElementById('openDrawer');
+
+  function openDrawer(){
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+  }
+
+  openDrawerBtn.addEventListener('click', openDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const target = link.dataset.nav;
+      closeDrawer();
+      if(target === 'logout'){
+        alert('Logout (simulasi) — nanti ini balik ke halaman login.');
+      } else {
+        alert('Halaman "' + target + '" belum dibuat — segera disusul ya.');
+      }
+    });
+  });
+
+  // ===== REELS =====
+  const reelsPage       = document.getElementById('reelsPage');
+  const reelsGridView   = document.getElementById('reelsGridView');
+  const reelsPlayerView = document.getElementById('reelsPlayerView');
+  const reelsGrid       = document.getElementById('reelsGrid');
+  const reelsFilterRow  = document.getElementById('reelsFilterRow');
+  const reelsContainer  = document.getElementById('reelsContainer');
+  const reelsFileInput  = document.getElementById('reelsFileInput');
+  const reelsUploadFab  = document.getElementById('reelsUploadFab');
+  const reelBackBtn     = document.getElementById('reelBackBtn');
+  const navReels        = document.getElementById('navReels');
+  const navBeranda      = document.querySelector('.nav-item[aria-label="Beranda"]');
+  const mainFeed        = document.querySelector('.feed');
+  const mainTopbar      = document.querySelector('.topbar');
+
+  const reelTags = {
+    kerjabakti: { label:'Kerja Bakti', cls:'tag-kerjabakti', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v14h16v-6"/></svg>' },
+    pengajian:  { label:'Pengajian',  cls:'tag-pengajian',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4z"/><path d="M5 21v-7a7 7 0 0 1 14 0v7"/></svg>' },
+    agustusan:  { label:'17 Agustus', cls:'tag-17agustus',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 21V4l9 4 9-4v13l-9 4z"/></svg>' },
+    kasrt:      { label:'Kas RT',     cls:'tag-kasrt',       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>' },
+    infowarga:  { label:'Info Warga', cls:'tag-infowarga',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' },
+    rapat:      { label:'Rapat RT',   cls:'tag-rapat',       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+  };
+
+  const reelFilters = [
+    { key:'semua', label:'Semua' },
+    { key:'kerjabakti', label:'Kerja Bakti' },
+    { key:'pengajian', label:'Pengajian' },
+    { key:'agustusan', label:'17 Agustus' },
+    { key:'kasrt', label:'Kas RT' },
+  ];
+
+  let activeReelFilter = 'semua';
+  let activeReelId = null;
+
+  // Dummy reels data
+  let reels = [
+    {
+      id: 1, tag:'kerjabakti', name: 'Pak RT', initial: 'R', role: 'rt', src: null,
+      caption: 'Suasana kerja bakti Minggu pagi bareng warga 💪🏽', likes: 124, liked: false, comments: 32,
+      views:'1.2K', duration:'00:24', location:'Lapangan RT 37', time:'07:02 WIB', attendance:'34 warga hadir',
+    },
+    {
+      id: 2, tag:'pengajian', name: 'Ustadz Hadi', initial: 'H', role: 'ustadz', src: null,
+      caption: 'Pengajian rutin RT 37, semoga berkah untuk semua 🤲', likes: 86, liked: false, comments: 14,
+      views:'892', duration:'00:45', location:'Musholla RT 37', time:'19:30 WIB', attendance:'28 warga hadir',
+    },
+    {
+      id: 3, tag:'agustusan', name: 'Panitia 17an', initial: 'P', role: 'admin', src: null,
+      caption: 'Jalanan dihias meriah buat 17 Agustus tahun ini 🇮🇩', likes: 152, liked: false, comments: 41,
+      views:'1.5K', duration:'00:18', location:'Jl. Kidang Berik', time:'16:00 WIB', attendance:'62 warga hadir',
+    },
+    {
+      id: 4, tag:'kerjabakti', name: 'Pak RT', initial: 'R', role: 'rt', src: null,
+      caption: 'Bersih-bersih got dan sampah di gang 3 🧹', likes: 64, liked: false, comments: 9,
+      views:'756', duration:'00:31', location:'Gang 3 RT 37', time:'07:15 WIB', attendance:'19 warga hadir',
+    },
+    {
+      id: 5, tag:'infowarga', name: 'Admin RT', initial: 'A', role: 'admin', src: null,
+      caption: 'Laporan jalan rusak di depan blok C, mohon kehati-hatian ⚠️', likes: 42, liked: false, comments: 17,
+      views:'512', duration:'00:20', location:'Blok C RT 37', time:'14:10 WIB', attendance:null,
+    },
+    {
+      id: 6, tag:'rapat', name: 'Pak RW', initial: 'W', role: 'rw', src: null,
+      caption: 'Rapat koordinasi pengurus RT membahas agenda bulan ini', likes: 58, liked: false, comments: 11,
+      views:'612', duration:'00:38', location:'Balai RW', time:'20:00 WIB', attendance:'9 pengurus hadir',
+    },
+    {
+      id: 7, tag:'kasrt', name: 'Bendahara RT', initial: 'B', role: 'admin', src: null,
+      caption: 'Penyerahan dana kas RT untuk kebutuhan kerja bakti bulan ini', likes: 35, liked: false, comments: 6,
+      views:'432', duration:'00:26', location:'Sekretariat RT 37', time:'10:00 WIB', attendance:null,
+    },
+    {
+      id: 8, tag:'infowarga', name: 'Admin RT', initial: 'A', role: 'admin', src: null,
+      caption: 'Lampu jalan di gang 5 mati, sudah dilaporkan ke PLN 💡', likes: 28, liked: false, comments: 5,
+      views:'398', duration:'00:16', location:'Gang 5 RT 37', time:'18:45 WIB', attendance:null,
+    },
+    {
+      id: 9, tag:'pengajian', name: 'Ustadz Hadi', initial: 'H', role: 'ustadz', src: null,
+      caption: 'Majelis ilmu malam ini, terbuka untuk seluruh warga 📖', likes: 71, liked: false, comments: 13,
+      views:'689', duration:'00:41', location:'Musholla RT 37', time:'19:00 WIB', attendance:'24 warga hadir',
+    },
+  ];
+
+  function avatarClassInline(role){
+    const map = {
+      rt:     'rgba(224,168,71,0.18)|#e0a847',
+      rw:     'rgba(230,120,50,0.18)|#e67832',
+      lurah:  'rgba(220,70,80,0.18)|#e05060',
+      carik:  'rgba(80,140,220,0.18)|#508cdc',
+      ustadz: 'rgba(60,180,120,0.18)|#3cb478',
+      admin:  'rgba(150,90,220,0.18)|#965adc',
+      warga:  'rgba(61,220,151,0.18)|#3ddc97',
+    };
+    const [bg, color] = (map[role] || map.warga).split('|');
+    return `background:${bg};color:${color};`;
+  }
+
+  // ---------- GRID VIEW ----------
+  function renderReelFilters(){
+    reelsFilterRow.innerHTML = reelFilters.map(f => `
+      <div class="reels-filter-chip ${f.key === activeReelFilter ? 'active' : ''}" data-filter="${f.key}">
+        ${f.key !== 'semua' && reelTags[f.key] ? reelTags[f.key].icon : ''}
+        ${f.label}
+      </div>
+    `).join('');
+
+    reelsFilterRow.querySelectorAll('.reels-filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        activeReelFilter = chip.dataset.filter;
+        renderReelFilters();
+        renderReelsGrid();
+      });
+    });
+  }
+
+  function renderReelsGrid(){
+    const list = activeReelFilter === 'semua' ? reels : reels.filter(r => r.tag === activeReelFilter);
+
+    if(list.length === 0){
+      reelsGrid.innerHTML = `
+        <div class="reels-empty" style="position:relative;grid-column:1/-1;color:var(--text-dim);height:auto;padding:48px 24px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+          <p>Belum ada Reels di kategori ini.</p>
+        </div>`;
+      return;
+    }
+
+    reelsGrid.innerHTML = list.map(r => {
+      const tag = reelTags[r.tag];
+      return `
+      <div class="reels-grid-item" data-rid="${r.id}">
+        <div class="grid-thumb-fallback">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <div class="grid-tag ${tag.cls}">${tag.icon}${tag.label}</div>
+        <div class="grid-duration">${r.duration}</div>
+        <div class="grid-stats">
+          <div class="grid-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="6 4 20 12 6 20 6 4"/></svg>${r.views}</div>
+          <div class="grid-stat"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>${r.likes}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    reelsGrid.querySelectorAll('.reels-grid-item').forEach(item => {
+      item.addEventListener('click', () => openReelPlayer(Number(item.dataset.rid)));
+    });
+  }
+
+  function showReelsGrid(){
+    reelsGridView.style.display = 'block';
+    reelsPlayerView.style.display = 'none';
+    reelsContainer.querySelectorAll('video').forEach(v => v.pause());
+    renderReelFilters();
+    renderReelsGrid();
+  }
+
+  function openReelPlayer(id){
+    activeReelId = id;
+    reelsGridView.style.display = 'none';
+    reelsPlayerView.style.display = 'block';
+    renderReelsPlayer();
+  }
+
+  // ---------- PLAYER VIEW ----------
+  function renderReelsPlayer(){
+    const list = activeReelFilter === 'semua' ? reels : reels.filter(r => r.tag === activeReelFilter);
+
+    if(list.length === 0){
+      reelsContainer.innerHTML = '';
+      return;
+    }
+
+    reelsContainer.innerHTML = list.map((r) => {
+      const tag = reelTags[r.tag];
+      return `
+      <div class="reel-item" data-rid="${r.id}">
+
+        ${r.src
+          ? `<video class="reel-video" src="${r.src}" loop playsinline preload="metadata"></video>`
+          : `<div class="reel-placeholder-bg" style="background:linear-gradient(135deg,#0d1a14 0%,#0a1520 50%,#140d1a 100%);">
+              <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+            </div>`}
+
+        <!-- play/pause feedback -->
+        <div class="reel-play-overlay" id="playOverlay-${r.id}">
+          <svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.4)"/><polygon points="10 8 16 12 10 16" fill="white"/></svg>
+        </div>
+
+        <!-- category tag top-left -->
+        <div class="grid-tag ${tag.cls}" style="position:absolute;top:max(14px, env(safe-area-inset-top));left:14px;z-index:10;">${tag.icon}${tag.label}</div>
+
+        <!-- right actions -->
+        <div class="reel-actions">
+          <button class="reel-action-btn ${r.liked ? 'liked' : ''}" data-rid="${r.id}" data-action="like">
+            <div class="reel-action-icon">
+              <svg viewBox="0 0 24 24" fill="${r.liked ? 'var(--danger)' : 'none'}" stroke="${r.liked ? 'var(--danger)' : 'currentColor'}" stroke-width="2">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+              </svg>
+            </div>
+            <span>${r.likes}</span>
+          </button>
+
+          <button class="reel-action-btn" data-action="comment">
+            <div class="reel-action-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/>
+              </svg>
+            </div>
+            <span>${r.comments}</span>
+          </button>
+
+          <button class="reel-action-btn" data-action="share">
+            <div class="reel-action-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </div>
+            <span>Bagikan</span>
+          </button>
+        </div>
+
+        <!-- bottom info -->
+        <div class="reel-info">
+          ${(r.location || r.time || r.attendance) ? `
+          <div class="reel-meta-card">
+            ${r.location ? `<div class="reel-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${escapeHtml(r.location)}</div>` : ''}
+            ${r.time ? `<div class="reel-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeHtml(r.time)}</div>` : ''}
+            ${r.attendance ? `<div class="reel-meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${escapeHtml(r.attendance)}</div>` : ''}
+          </div>` : ''}
+          <div class="reel-user">
+            <div class="reel-avatar" style="${avatarClassInline(r.role)}">${r.initial}</div>
+            <div class="reel-username">
+              ${escapeHtml(r.name)}
+              ${badgeHtml(r.role)}
+            </div>
+          </div>
+          ${r.caption ? `<p class="reel-caption">${escapeHtml(r.caption)}</p>` : ''}
+        </div>
+
+      </div>
+    `;
+    }).join('');
+
+    // Tap to play/pause
+    reelsContainer.querySelectorAll('.reel-item').forEach(item => {
+      const vid = item.querySelector('video');
+      const overlay = item.querySelector('.reel-play-overlay');
+      if(!vid) return;
+
+      item.addEventListener('click', e => {
+        if(e.target.closest('.reel-actions')) return;
+        if(vid.paused){
+          vid.play();
+          overlay.classList.remove('show');
+        } else {
+          vid.pause();
+          overlay.classList.add('show');
+          setTimeout(() => overlay.classList.remove('show'), 800);
+        }
+      });
+    });
+
+    // Like action
+    reelsContainer.querySelectorAll('[data-action="like"]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const reel = reels.find(r => r.id === Number(btn.dataset.rid));
+        reel.liked = !reel.liked;
+        reel.likes += reel.liked ? 1 : -1;
+        renderReelsPlayer();
+        scrollToActiveReel();
+      });
+    });
+
+    // IntersectionObserver — autoplay on enter, pause on leave
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const vid = entry.target.querySelector('video');
+        if(!vid) return;
+        if(entry.isIntersecting){
+          vid.play().catch(()=>{});
+        } else {
+          vid.pause();
+        }
+      });
+    }, { threshold: 0.6 });
+
+    reelsContainer.querySelectorAll('.reel-item').forEach(item => observer.observe(item));
+
+    scrollToActiveReel();
+  }
+
+  function scrollToActiveReel(){
+    const target = reelsContainer.querySelector(`.reel-item[data-rid="${activeReelId}"]`);
+    if(target) target.scrollIntoView({ block:'start' });
+  }
+
+
+  // Upload
+  reelsUploadFab.addEventListener('click', () => reelsFileInput.click());
+
+  reelsFileInput.addEventListener('change', () => {
+    const file = reelsFileInput.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const newReel = {
+        id: Date.now(), tag:'kerjabakti', name: currentUser.nama, initial: currentUser.initial, role: currentUser.role, src: e.target.result,
+        caption: '', likes: 0, liked: false, comments: 0,
+        views:'0', duration:'00:00', location:null, time:null, attendance:null,
+      };
+      reels.unshift(newReel);
+      renderReelFilters();
+      renderReelsGrid();
+    };
+    reader.readAsDataURL(file);
+    reelsFileInput.value = '';
+  });
+
+  // Nav show/hide
+  function showReels(){
+    reelsPage.style.display = 'block';
+    mainFeed.style.display  = 'none';
+    mainTopbar.style.display= 'none';
+    navReels.classList.add('active');
+    document.querySelectorAll('.nav-item:not(#navReels)').forEach(n => n.classList.remove('active'));
+    showReelsGrid();
+  }
+
+  function hideReels(){
+    reelsContainer.querySelectorAll('video').forEach(v => v.pause());
+    reelsPage.style.display = 'none';
+    mainFeed.style.display  = 'block';
+    mainTopbar.style.display= 'block';
+    navReels.classList.remove('active');
+  }
+
+  reelBackBtn.addEventListener('click', showReelsGrid);
+
+  navReels.addEventListener('click', showReels);
+
+  // Semua nav item selain Reels & DM bisa balik dari Reels/DM
+  document.querySelectorAll('.nav-item:not(#navReels):not(#navDM):not(.fab)').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(reelsPage.style.display === 'block') hideReels();
+      if(dmPage.style.display === 'block') hideDM();
+    });
+  });
+
+  navBeranda.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    navBeranda.classList.add('active');
+  });
+
+  // ===== DM / PESAN =====
+  const dmPage         = document.getElementById('dmPage');
+  const dmListView     = document.getElementById('dmListView');
+  const dmThreadView   = document.getElementById('dmThreadView');
+  const dmList         = document.getElementById('dmList');
+  const dmBackBtn       = document.getElementById('dmBackBtn');
+  const dmMessages      = document.getElementById('dmMessages');
+  const dmThreadAvatar  = document.getElementById('dmThreadAvatar');
+  const dmThreadName    = document.getElementById('dmThreadName');
+  const dmThreadStatus  = document.getElementById('dmThreadStatus');
+  const dmComposerInput = document.getElementById('dmComposerInput');
+  const dmSendBtn       = document.getElementById('dmSendBtn');
+  const navDM           = document.getElementById('navDM');
+  const navDmBadge      = document.getElementById('navDmBadge');
+
+  let activeDmId = null;
+
+  let dmConversations = [
+    {
+      id: 1, name: 'Pak RT', initial: 'R', role: 'rt', online: true, time: '23:14', unread: 2,
+      messages: [
+        { from:'them', text:'Halo Azura, jangan lupa kerja bakti hari Minggu ya 🙏' },
+        { from:'them', text:'Mohon perwakilan tiap KK hadir jam 07:00 di lapangan' },
+      ],
+    },
+    {
+      id: 2, name: 'Bendahara RT', initial: 'B', role: 'admin', online: true, time: '20:02', unread: 1,
+      messages: [
+        { from:'them', text:'Iuran kas RT bulan ini sudah masuk, terima kasih ya 🙏' },
+      ],
+    },
+    {
+      id: 3, name: 'Sari', initial: 'S', role: 'warga', online: false, time: 'Kemarin', unread: 0,
+      messages: [
+        { from:'me', text:'Sari, lomba 17an kemarin seru banget!' },
+        { from:'them', text:'Iya bener, taun depan kita bikin lebih rame lagi 🎉' },
+      ],
+    },
+    {
+      id: 4, name: 'Ustadz Hadi', initial: 'H', role: 'ustadz', online: false, time: 'Kemarin', unread: 0,
+      messages: [
+        { from:'them', text:'Pengajian rutin malam ini jam 19:30 di musholla ya' },
+        { from:'me', text:'Siap ustadz, insyaAllah hadir 🙏' },
+      ],
+    },
+  ];
+
+  function dmAvatarStyle(role){
+    const map = {
+      rt:     'rgba(224,168,71,0.18)|#e0a847',
+      rw:     'rgba(230,120,50,0.18)|#e67832',
+      lurah:  'rgba(220,70,80,0.18)|#e05060',
+      carik:  'rgba(80,140,220,0.18)|#508cdc',
+      ustadz: 'rgba(60,180,120,0.18)|#3cb478',
+      admin:  'rgba(150,90,220,0.18)|#965adc',
+      warga:  'rgba(61,220,151,0.18)|#3ddc97',
+    };
+    const [bg, color] = (map[role] || map.warga).split('|');
+    return `background:${bg};color:${color};`;
+  }
+
+  function updateDmNavBadge(){
+    const totalUnread = dmConversations.reduce((sum, c) => sum + c.unread, 0);
+    if(totalUnread > 0){
+      navDmBadge.textContent = totalUnread > 9 ? '9+' : totalUnread;
+      navDmBadge.classList.remove('hidden');
+    } else {
+      navDmBadge.classList.add('hidden');
+    }
+  }
+
+  function renderDmList(){
+    if(dmConversations.length === 0){
+      dmList.innerHTML = `
+        <div class="dm-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+          <p>Belum ada pesan.</p>
+        </div>`;
+      return;
+    }
+
+    dmList.innerHTML = dmConversations.map(c => {
+      const lastMsg = c.messages[c.messages.length - 1];
+      const preview = lastMsg ? (lastMsg.from === 'me' ? 'Anda: ' : '') + lastMsg.text : '';
+      return `
+      <div class="dm-list-item ${c.unread > 0 ? 'unread' : ''}" data-did="${c.id}">
+        <div class="dm-avatar" style="${dmAvatarStyle(c.role)}">
+          ${c.initial}
+          ${c.online ? '<span class="dm-online-dot"></span>' : ''}
+        </div>
+        <div class="dm-list-body">
+          <div class="dm-list-top">
+            <div class="dm-list-name">${escapeHtml(c.name)}${badgeHtml(c.role)}</div>
+            <div class="dm-list-time">${c.time}</div>
+          </div>
+          <div class="dm-list-bottom">
+            <div class="dm-list-preview">${escapeHtml(preview)}</div>
+            ${c.unread > 0 ? `<div class="dm-unread-badge">${c.unread}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    dmList.querySelectorAll('.dm-list-item').forEach(item => {
+      item.addEventListener('click', () => openDmThread(Number(item.dataset.did)));
+    });
+  }
+
+  function openDmThread(id){
+    activeDmId = id;
+    const convo = dmConversations.find(c => c.id === id);
+    if(!convo) return;
+    convo.unread = 0;
+    updateDmNavBadge();
+
+    dmThreadAvatar.style = dmAvatarStyle(convo.role);
+    dmThreadAvatar.textContent = convo.initial;
+    dmThreadName.innerHTML = `${escapeHtml(convo.name)}${badgeHtml(convo.role)}`;
+    dmThreadStatus.textContent = convo.online ? 'Online' : 'Offline';
+
+    renderDmMessages();
+    dmListView.style.display = 'none';
+    dmThreadView.style.display = 'flex';
+  }
+
+  function renderDmMessages(){
+    const convo = dmConversations.find(c => c.id === activeDmId);
+    if(!convo) return;
+    dmMessages.innerHTML = convo.messages.map(m => `
+      <div class="dm-msg-row ${m.from === 'me' ? 'out' : 'in'}">
+        <div class="dm-msg-bubble">${escapeHtml(m.text)}</div>
+      </div>
+    `).join('');
+    dmMessages.scrollTop = dmMessages.scrollHeight;
+  }
+
+  function sendDmMessage(){
+    const text = dmComposerInput.value.trim();
+    if(!text) return;
+    const convo = dmConversations.find(c => c.id === activeDmId);
+    if(!convo) return;
+    convo.messages.push({ from:'me', text });
+    convo.time = 'Baru saja';
+    dmComposerInput.value = '';
+    renderDmMessages();
+    renderDmList();
+  }
+
+  dmSendBtn.addEventListener('click', sendDmMessage);
+  dmComposerInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter') sendDmMessage();
+  });
+
+  dmBackBtn.addEventListener('click', () => {
+    dmThreadView.style.display = 'none';
+    dmListView.style.display = 'flex';
+    renderDmList();
+  });
+
+  function showDM(){
+    dmPage.style.display = 'block';
+    mainFeed.style.display  = 'none';
+    mainTopbar.style.display= 'none';
+    navDM.classList.add('active');
+    document.querySelectorAll('.nav-item:not(#navDM)').forEach(n => n.classList.remove('active'));
+    dmThreadView.style.display = 'none';
+    dmListView.style.display = 'flex';
+    renderDmList();
+  }
+
+  function hideDM(){
+    dmPage.style.display = 'none';
+    mainFeed.style.display  = 'block';
+    mainTopbar.style.display= 'block';
+    navDM.classList.remove('active');
+  }
+
+  navDM.addEventListener('click', showDM);
+
+  // Reels & Reels back nav harus bisa nutup DM juga
+  navReels.addEventListener('click', () => { if(dmPage.style.display === 'block') hideDM(); });
+  navBeranda.addEventListener('click', () => { if(dmPage.style.display === 'block') hideDM(); });
+
+  updateDmNavBadge();
+</script>
+
+</body>
+</html>
