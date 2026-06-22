@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT 37 Network — Komunitas Digital Untuk Warga Modern</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --bg:#06050f;
+    --card:#0d0b1a;
+    --border:#1a1235;
+    --border-light:#241a42;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --accent:#00f5ff;
+    --accent-dim:#00f5ff18;
+    --accent2:#ff00c8;
+    --accent2-dim:#ff00c818;
+    --danger:#ff2d6b;
+    --amber:#f5e642;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{ background:var(--bg); scroll-behavior:smooth; }
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body{ background:var(--bg); min-height:100vh; overflow-x:hidden; }
+
+  button, a{ font-family:inherit; }
+  a{ text-decoration:none; color:inherit; }
+
+  .page{ max-width:480px; margin:0 auto; position:relative; }
+
+  /* ============ NAV ============ */
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:max(16px, env(safe-area-inset-top)) 18px 14px;
+    position:relative;
+    z-index:5;
+  }
+  .nav-brand{ display:flex; flex-direction:column; line-height:1; }
+  .nav-brand-name{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:18px;
+    letter-spacing:0.3px;
+    background:linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .nav-brand-sub{
+    font-family:'Share Tech Mono',monospace;
+    font-size:8px;
+    letter-spacing:3px;
+    color:var(--text-dim);
+    margin-top:1px;
+  }
+  .nav-login-btn{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--accent);
+    background:rgba(0,245,255,0.06);
+    border:1px solid rgba(0,245,255,0.35);
+    border-radius:18px;
+    padding:8px 16px;
+    cursor:pointer;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    padding:18px 18px 30px;
+    overflow:hidden;
+  }
+
+  .hero-bg{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background:
+      radial-gradient(ellipse 90% 60% at 30% 0%, rgba(0,245,255,0.16), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 90% 30%, rgba(255,0,200,0.14), transparent 60%),
+      linear-gradient(180deg, #0a0818 0%, var(--bg) 100%);
+  }
+  .hero-bg::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size:28px 28px;
+    mask-image:linear-gradient(to bottom, black 0%, transparent 85%);
+  }
+  .hero-skyline{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:120px;
+    opacity:0.5;
+    z-index:0;
+  }
+
+  .hero-content{ position:relative; z-index:1; }
+
+  .hero-eyebrow{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px;
+    letter-spacing:2.5px;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .hero-eyebrow svg{ width:12px;height:12px; }
+
+  .hero-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:40px;
+    line-height:1.05;
+    letter-spacing:0.2px;
+    margin-bottom:6px;
+  }
+  .hero-title .grad{
+    background:linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .hero-subtitle{
+    font-size:17px;
+    font-weight:600;
+    color:#fff;
+    margin-bottom:14px;
+  }
+  .hero-subtitle .accent{ color:var(--accent); }
+
+  .hero-desc{
+    font-size:13.5px;
+    color:var(--text-dim);
+    line-height:1.6;
+    max-width:320px;
+    margin-bottom:22px;
+  }
+
+  .hero-cta-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .cta-primary{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    background:linear-gradient(90deg, var(--accent), #00d4e8);
+    color:#06150f;
+    border:none;
+    border-radius:13px;
+    padding:14px 18px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 0 22px rgba(0,245,255,0.3), 0 6px 16px rgba(0,0,0,0.4);
+  }
+  .cta-primary svg{ width:15px;height:15px; }
+  .cta-secondary{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    background:rgba(255,255,255,0.03);
+    color:var(--text);
+    border:1px solid var(--border-light);
+    border-radius:13px;
+    padding:14px 18px;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .cta-secondary svg{ width:14px;height:14px; }
+
+  /* Hero photo card — gradient placeholder, no real photo */
+  .hero-photo-card{
+    position:relative;
+    height:200px;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid var(--border-light);
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(61,220,151,0.18), transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(0,245,255,0.16), transparent 55%),
+      linear-gradient(135deg, #0d1a14 0%, #0a1520 55%, #140d1a 100%);
+  }
+  .hero-photo-card::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:20px 20px;
+  }
+  .hero-photo-icon{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero-photo-icon svg{ width:46px;height:46px;color:rgba(255,255,255,0.1); }
+  .hero-photo-tag{
+    position:absolute;
+    top:12px; left:12px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:rgba(61,220,151,0.18);
+    color:#3ddc97;
+    font-size:10.5px;
+    font-weight:800;
+    letter-spacing:0.3px;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:8px;
+  }
+  .hero-photo-tag svg{ width:10px;height:10px; }
+  .hero-photo-caption{
+    position:absolute;
+    bottom:12px; left:12px; right:12px;
+    color:#fff;
+    font-weight:700;
+    font-size:13px;
+    text-shadow:0 1px 6px rgba(0,0,0,0.6);
+  }
+
+  /* ============ STATS BAR ============ */
+  .stats-bar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border-light);
+    border:1px solid var(--border-light);
+    border-radius:16px;
+    overflow:hidden;
+    margin:0 18px 30px;
+  }
+  .stats-cell{
+    background:var(--card);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 14px;
+  }
+  .stats-icon{
+    width:36px;height:36px;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .stats-icon svg{ width:18px;height:18px; }
+  .stats-cell.s-cyan .stats-icon{ background:rgba(0,245,255,0.1); color:var(--accent); }
+  .stats-cell.s-magenta .stats-icon{ background:rgba(255,0,200,0.1); color:#ff7adb; }
+  .stats-cell.s-green .stats-icon{ background:rgba(61,220,151,0.1); color:#3ddc97; }
+  .stats-cell.s-amber .stats-icon{ background:rgba(245,176,40,0.1); color:#f5b028; }
+  .stats-num{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    color:#fff;
+    line-height:1;
+  }
+  .stats-label{
+    font-size:10.5px;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+
+  /* ============ SECTION HEADER ============ */
+  .section{ padding:0 18px 32px; }
+  .section-eyebrow{
+    font-family:'Share Tech Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:8px;
+  }
+  .section-heading{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:21px;
+    line-height:1.25;
+    margin-bottom:8px;
+  }
+  .section-sub{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.55;
+    max-width:320px;
+    margin-bottom:18px;
+  }
+  .section-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .section-link svg{ width:13px;height:13px; }
+
+  /* ============ FEED PREVIEW CARDS ============ */
+  .feed-preview-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .feed-card{
+    background:var(--card);
+    border:1px solid var(--border-light);
+    border-radius:16px;
+    padding:14px;
+  }
+  .feed-card-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .feed-avatar{
+    width:38px;height:38px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;
+    font-size:14px;
+    flex-shrink:0;
+    border:2px solid rgba(255,255,255,0.1);
+  }
+  .feed-card-name-row{ flex:1; min-width:0; }
+  .feed-card-name{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-weight:700;
+    font-size:13.5px;
+    color:#fff;
+  }
+  .feed-card-name svg{ width:13px;height:13px;color:var(--accent);flex-shrink:0; }
+  .feed-card-meta{
+    font-size:11px;
+    color:var(--text-dim);
+    margin-top:1px;
+  }
+  .feed-card-text{
+    font-size:13px;
+    color:var(--text);
+    line-height:1.5;
+    margin-bottom:11px;
+  }
+  .feed-card-photo{
+    height:120px;
+    border-radius:11px;
+    margin-bottom:11px;
+    position:relative;
+    overflow:hidden;
+  }
+  .feed-card-photo svg{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:26px;height:26px;
+    color:rgba(255,255,255,0.1);
+  }
+  .photo-grad-1{ background:linear-gradient(135deg,#0d1a14,#0a1520); }
+  .photo-grad-2{ background:linear-gradient(135deg,#1a0d20,#0a1018); }
+
+  .feed-card-actions{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .feed-action{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-dim);
+  }
+  .feed-action svg{ width:15px;height:15px; }
+  .feed-action.liked{ color:var(--danger); }
+
+  /* ============ VIDEO PREVIEW ============ */
+  .video-preview-card{
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid var(--border-light);
+  }
+  .video-thumb{
+    position:relative;
+    height:180px;
+    background:
+      radial-gradient(ellipse at 60% 30%, rgba(0,245,255,0.14), transparent 55%),
+      linear-gradient(135deg, #0d1a14 0%, #0a1520 55%, #140d1a 100%);
+  }
+  .video-thumb::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:20px 20px;
+  }
+  .video-play-btn{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:58px;height:58px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(6px);
+    border:1.5px solid rgba(255,255,255,0.3);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 26px rgba(0,245,255,0.25);
+  }
+  .video-play-btn svg{ width:20px;height:20px;color:#fff;margin-left:2px; }
+
+  .video-info{
+    background:var(--card);
+    padding:16px;
+  }
+  .video-eyebrow{
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .video-title{
+    font-weight:800;
+    font-size:16px;
+    color:#fff;
+    margin-bottom:6px;
+  }
+  .video-desc{
+    font-size:12.5px;
+    color:var(--text-dim);
+    line-height:1.5;
+    margin-bottom:12px;
+  }
+  .video-meta-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+  .video-meta-row svg{ width:14px;height:14px;color:var(--accent); }
+  .video-meta-row .dur{
+    font-family:'Share Tech Mono',monospace;
+    color:var(--text);
+  }
+
+  /* ============ FEATURE STRIP ============ */
+  .feature-strip{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .feature-row{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:14px;
+    background:var(--card);
+    border:1px solid var(--border-light);
+    border-radius:14px;
+  }
+  .feature-row-icon{
+    width:40px;height:40px;
+    border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .feature-row-icon svg{ width:20px;height:20px; }
+  .f-cyan .feature-row-icon{ background:rgba(0,245,255,0.1); color:var(--accent); }
+  .f-magenta .feature-row-icon{ background:rgba(255,0,200,0.1); color:#ff7adb; }
+  .f-green .feature-row-icon{ background:rgba(61,220,151,0.1); color:#3ddc97; }
+  .f-amber .feature-row-icon{ background:rgba(245,176,40,0.1); color:#f5b028; }
+  .feature-row-name{
+    font-weight:700;
+    font-size:13.5px;
+    color:#fff;
+    margin-bottom:2px;
+  }
+  .feature-row-desc{
+    font-size:12px;
+    color:var(--text-dim);
+    line-height:1.4;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta{
+    position:relative;
+    text-align:center;
+    border-radius:20px;
+    padding:34px 22px;
+    margin:8px 18px 30px;
+    overflow:hidden;
+    border:1px solid rgba(0,245,255,0.25);
+  }
+  .final-cta-bg{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background:
+      radial-gradient(ellipse 100% 80% at 20% 0%, rgba(0,245,255,0.16), transparent 60%),
+      radial-gradient(ellipse 90% 70% at 90% 100%, rgba(255,0,200,0.14), transparent 60%),
+      var(--card);
+  }
+  .final-cta-content{ position:relative; z-index:1; }
+  .final-cta-eyebrow{
+    font-family:'Share Tech Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .final-cta-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:22px;
+    margin-bottom:8px;
+  }
+  .final-cta-title .grad{
+    background:linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .final-cta-desc{
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:22px;
+    line-height:1.55;
+    max-width:280px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer{
+    border-top:1px solid var(--border-light);
+    padding:22px 18px max(24px, env(safe-area-inset-bottom));
+  }
+  .footer-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .footer-brand{
+    font-family:'Orbitron',sans-serif;
+    font-weight:800;
+    font-size:13px;
+    color:var(--text-dim);
+  }
+  .footer-socials{ display:flex; gap:8px; }
+  .footer-social-btn{
+    width:30px;height:30px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border-light);
+    color:var(--text-dim);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .footer-social-btn svg{ width:14px;height:14px; }
+  .footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-bottom:10px;
+  }
+  .footer-copyright{
+    font-size:11px;
+    color:var(--text-dim);
+    opacity:0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-brand">
+      <span class="nav-brand-name">RT37</span>
+      <span class="nav-brand-sub">NETWORK</span>
+    </div>
+    <button class="nav-login-btn" id="navLoginBtn">Masuk</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+        Welcome To
+      </div>
+
+      <div class="hero-title">RT<span class="grad">37</span><br>Network</div>
+
+      <div class="hero-subtitle">Komunitas Digital<br>Untuk <span class="accent">Warga Modern</span></div>
+
+      <p class="hero-desc">
+        Terhubung, berbagi informasi, dan berkolaborasi untuk lingkungan yang lebih baik.
+      </p>
+
+      <div class="hero-cta-row">
+        <button class="cta-primary" id="ctaPrimaryBtn">
+          Masuk
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button class="cta-secondary" id="ctaSecondaryBtn">
+          Lihat Aktivitas
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+
+      <div class="hero-photo-card">
+        <div class="hero-photo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="hero-photo-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v14h16v-6"/></svg>
+          Kerja Bakti
+        </div>
+        <div class="hero-photo-caption">Gotong royong menjaga lingkungan RT 37</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-cell s-cyan">
+      <div class="stats-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div>
+        <div class="stats-num">462</div>
+        <div class="stats-label">Warga Terdaftar</div>
+      </div>
+    </div>
+    <div class="stats-cell s-magenta">
+      <div class="stats-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 13z"/><path d="M11 13.5V18a2 2 0 0 0 4 0v-1"/></svg>
+      </div>
+      <div>
+        <div class="stats-num">32</div>
+        <div class="stats-label">Pengumuman</div>
+      </div>
+    </div>
+    <div class="stats-cell s-green">
+      <div class="stats-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <div>
+        <div class="stats-num">128</div>
+        <div class="stats-label">Video Kegiatan</div>
+      </div>
+    </div>
+    <div class="stats-cell s-amber">
+      <div class="stats-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="stats-num">14</div>
+        <div class="stats-label">Acara Terlaksana</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEED PREVIEW -->
+  <div class="section">
+    <div class="section-eyebrow">Feed Terbaru</div>
+    <div class="section-heading">Informasi & Kabar<br>Dari Warga</div>
+    <p class="section-sub">Dapatkan update terbaru tentang kegiatan, pengumuman, dan informasi penting di lingkungan RT 37.</p>
+
+    <div class="feed-preview-list">
+
+      <div class="feed-card">
+        <div class="feed-card-top">
+          <div class="feed-avatar" style="background:rgba(224,168,71,0.18);color:#e0a847;">R</div>
+          <div class="feed-card-name-row">
+            <div class="feed-card-name">
+              Pak RT
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg>
+            </div>
+            <div class="feed-card-meta">Pengurus · 2 jam lalu</div>
+          </div>
+        </div>
+        <p class="feed-card-text">Kerja bakti Minggu pagi berjalan lancar. Terima kasih untuk semua warga yang hadir! 💪</p>
+        <div class="feed-card-photo photo-grad-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="feed-card-actions">
+          <div class="feed-action liked">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            24
+          </div>
+          <div class="feed-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+            8
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <div class="feed-card-top">
+          <div class="feed-avatar" style="background:rgba(61,220,151,0.18);color:#3ddc97;">S</div>
+          <div class="feed-card-name-row">
+            <div class="feed-card-name">
+              Sari
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z"/></svg>
+            </div>
+            <div class="feed-card-meta">Warga · 3 jam lalu</div>
+          </div>
+        </div>
+        <p class="feed-card-text">Pengajian rutin malam Jumat. Semoga kita semua selalu dalam lindungan-Nya. 🙏</p>
+        <div class="feed-card-photo photo-grad-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="feed-card-actions">
+          <div class="feed-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            18
+          </div>
+          <div class="feed-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+            6
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="#" class="section-link" style="margin-top:16px;display:inline-flex;">
+      Lihat Semua Feed
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+  <!-- VIDEO PREVIEW -->
+  <div class="section">
+    <div class="video-preview-card">
+      <div class="video-thumb">
+        <button class="video-play-btn" aria-label="Tonton video">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        </button>
+      </div>
+      <div class="video-info">
+        <div class="video-eyebrow">Video Kegiatan Terbaru</div>
+        <div class="video-title">Kerja Bakti Minggu Pagi</div>
+        <p class="video-desc">Gotong royong menjaga lingkungan adalah budaya yang harus kita jaga.</p>
+        <div class="video-meta-row">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          Tonton Video
+          <span class="dur">· 02:45</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-eyebrow">Fitur Utama</div>
+    <div class="section-heading">Semua Kebutuhan RT,<br>Dalam Satu App</div>
+
+    <div class="feature-strip">
+      <div class="feature-row f-cyan">
+        <div class="feature-row-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 13z"/><path d="M11 13.5V18a2 2 0 0 0 4 0v-1"/></svg>
+        </div>
+        <div>
+          <div class="feature-row-name">Pengumuman & Agenda</div>
+          <div class="feature-row-desc">Info penting langsung dari pengurus RT, tanpa kelewat di grup chat.</div>
+        </div>
+      </div>
+      <div class="feature-row f-magenta">
+        <div class="feature-row-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div>
+          <div class="feature-row-name">Reels & Galeri Warga</div>
+          <div class="feature-row-desc">Dokumentasi kegiatan RT tersimpan rapi per acara.</div>
+        </div>
+      </div>
+      <div class="feature-row f-green">
+        <div class="feature-row-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="feature-row-name">Data Warga & KK</div>
+          <div class="feature-row-desc">Informasi kependudukan tiap KK, rapi dan mudah diakses.</div>
+        </div>
+      </div>
+      <div class="feature-row f-amber">
+        <div class="feature-row-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.9-1L3 21l1.9-5.7a8.38 8.38 0 0 1-1-3.8 8.5 8.5 0 0 1 3.1-6.6A8.38 8.38 0 0 1 12.5 3h.5a8.48 8.48 0 0 1 8 8z"/></svg>
+        </div>
+        <div>
+          <div class="feature-row-name">Pesan Antar Warga</div>
+          <div class="feature-row-desc">Chat langsung dengan tetangga atau pengurus RT.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <div class="final-cta-bg"></div>
+    <div class="final-cta-content">
+      <div class="final-cta-eyebrow">Jadilah Bagian Dari Kita</div>
+      <div class="final-cta-title">Gabung <span class="grad">RT37 Network</span></div>
+      <p class="final-cta-desc">Bersama kita membangun lingkungan yang lebih aktif, terhubung, dan peduli.</p>
+      <button class="cta-primary" id="finalCtaBtn" style="max-width:220px;margin:0 auto;">
+        Masuk Sekarang
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">RT37 NETWORK</div>
+      <div class="footer-socials">
+        <div class="footer-social-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="footer-social-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </div>
+        <div class="footer-social-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.5 7.5s-.2-1.6-.9-2.3c-.8-.9-1.7-.9-2.2-1C16 4 12 4 12 4h0s-4 0-7.4.2c-.5.1-1.4.1-2.2 1-.7.7-.9 2.3-.9 2.3S1.3 9.4 1.3 11.3v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.2.2 7.2.2s4 0 7.4-.2c.5-.1 1.4-.1 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.8c0-1.9-.2-3.8-.2-3.8z"/><polygon points="9.8 8.9 9.8 15.1 15.5 12"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#">Tentang Kami</a>
+      <a href="#">Kebijakan Privasi</a>
+      <a href="#">Syarat & Ketentuan</a>
+    </div>
+    <div class="footer-copyright">© 2026 RT37 Network. All rights reserved.</div>
+  </div>
+
+</div>
+
+<script>
+  function goToLogin(){
+    window.location.href = 'login.html';
+  }
+  document.getElementById('navLoginBtn').addEventListener('click', goToLogin);
+  document.getElementById('ctaPrimaryBtn').addEventListener('click', goToLogin);
+  document.getElementById('finalCtaBtn').addEventListener('click', goToLogin);
+  document.getElementById('ctaSecondaryBtn').addEventListener('click', () => {
+    document.querySelector('.section').scrollIntoView({ behavior:'smooth' });
+  });
+</script>
+
+</body>
+</html>
