@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — RT 37 Network</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#04010d;
+    --card:#08051a;
+    --border:#1a0d3a;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --cyan:#00f5ff;
+    --pink:#ff00c8;
+    --yellow:#f5e642;
+    --danger:#ff2d6b;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{ background:var(--bg); }
+  html,body{
+    min-height:100%;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* === BACKGROUND === */
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow-x:hidden;
+    background: var(--bg);
+  }
+
+  /* Scanlines */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,245,255,0.013) 2px,
+      rgba(0,245,255,0.013) 4px
+    );
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* Grid */
+  body::after{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* Ambient glow blobs */
+  .glow-blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(80px);
+    pointer-events:none;
+    z-index:0;
+    opacity:0.18;
+  }
+  .glow-blob.cyan{
+    width:380px;height:380px;
+    background:var(--cyan);
+    top:-100px;left:-100px;
+    animation: blobFloat 8s ease-in-out infinite alternate;
+  }
+  .glow-blob.pink{
+    width:320px;height:320px;
+    background:var(--pink);
+    bottom:-80px;right:-80px;
+    animation: blobFloat 10s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes blobFloat{
+    from{ transform:translate(0,0) scale(1); }
+    to{ transform:translate(30px,20px) scale(1.08); }
+  }
+
+  button,a{ font-family:inherit; }
+  a{ text-decoration:none; color:inherit; }
+
+  .page{
+    max-width:420px;
+    margin:0 auto;
+    width:100%;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:0 22px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* === BACK BTN === */
+  .back-btn{
+    width:36px;height:36px;
+    border-radius:50%;
+    background:rgba(0,245,255,0.05);
+    border:1px solid rgba(0,245,255,0.2);
+    color:var(--cyan);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    margin:max(18px, env(safe-area-inset-top)) 0 0 -4px;
+    flex-shrink:0;
+    transition:all .2s;
+    box-shadow:0 0 10px rgba(0,245,255,0.15);
+  }
+  .back-btn:hover{
+    background:rgba(0,245,255,0.12);
+    box-shadow:0 0 18px rgba(0,245,255,0.35);
+  }
+  .back-btn svg{ width:18px;height:18px; }
+
+  /* === BRAND === */
+  .login-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:22px 0 28px;
+  }
+
+  .brand-icon-wrap{
+    position:relative;
+    margin-bottom:16px;
+  }
+  .login-brand-icon{
+    width:64px;height:64px;
+    border-radius:18px;
+    background:linear-gradient(135deg, rgba(0,245,255,0.1), rgba(255,0,200,0.06));
+    border:1px solid rgba(0,245,255,0.4);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--cyan);
+    box-shadow:
+      0 0 0 1px rgba(0,245,255,0.1),
+      0 0 20px rgba(0,245,255,0.25),
+      0 0 50px rgba(0,245,255,0.12),
+      inset 0 0 20px rgba(0,245,255,0.05);
+    position:relative;
+    z-index:1;
+    animation: iconPulse 3s ease-in-out infinite;
+  }
+  @keyframes iconPulse{
+    0%,100%{ box-shadow:0 0 0 1px rgba(0,245,255,0.1),0 0 20px rgba(0,245,255,0.25),0 0 50px rgba(0,245,255,0.12),inset 0 0 20px rgba(0,245,255,0.05); }
+    50%{ box-shadow:0 0 0 1px rgba(0,245,255,0.2),0 0 30px rgba(0,245,255,0.4),0 0 70px rgba(0,245,255,0.2),inset 0 0 25px rgba(0,245,255,0.08); }
+  }
+  .login-brand-icon svg{ width:30px;height:30px; }
+
+  /* Corner decorators */
+  .icon-corner{
+    position:absolute;
+    width:10px;height:10px;
+    border-color:var(--cyan);
+    border-style:solid;
+    opacity:0.7;
+  }
+  .icon-corner.tl{ top:-4px;left:-4px;border-width:2px 0 0 2px; }
+  .icon-corner.tr{ top:-4px;right:-4px;border-width:2px 2px 0 0; }
+  .icon-corner.bl{ bottom:-4px;left:-4px;border-width:0 0 2px 2px; }
+  .icon-corner.br{ bottom:-4px;right:-4px;border-width:0 2px 2px 0; }
+
+  .login-title{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:22px;
+    letter-spacing:1px;
+    margin-bottom:6px;
+    text-align:center;
+    text-shadow: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,245,255,0.2);
+  }
+  .login-title .num{
+    color:var(--cyan);
+    text-shadow:0 0 15px var(--cyan), 0 0 30px rgba(0,245,255,0.5);
+  }
+
+  .login-sub{
+    font-size:12px;
+    color:var(--text-dim);
+    text-align:center;
+    font-family:'Share Tech Mono',monospace;
+    letter-spacing:0.5px;
+  }
+  .login-sub::before{
+    content:'> ';
+    color:var(--cyan);
+    opacity:0.7;
+  }
+
+  /* === CARD === */
+  .login-card{
+    background:rgba(8,5,26,0.85);
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:18px;
+    padding:24px 20px 20px;
+    position:relative;
+    backdrop-filter:blur(8px);
+    box-shadow:
+      0 0 0 1px rgba(255,0,200,0.05),
+      0 0 40px rgba(0,245,255,0.06),
+      0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  /* Card corner accents */
+  .card-corner{
+    position:absolute;
+    width:14px;height:14px;
+    border-color:var(--cyan);
+    border-style:solid;
+    opacity:0.5;
+  }
+  .card-corner.tl{ top:-1px;left:-1px;border-width:2px 0 0 2px;border-radius:4px 0 0 0; }
+  .card-corner.tr{ top:-1px;right:-1px;border-width:2px 2px 0 0;border-radius:0 4px 0 0; }
+  .card-corner.bl{ bottom:-1px;left:-1px;border-width:0 0 2px 2px;border-radius:0 0 0 4px; }
+  .card-corner.br{ bottom:-1px;right:-1px;border-width:0 2px 2px 0;border-radius:0 0 4px 0; }
+
+  /* Card top scan line */
+  .card-scan{
+    position:absolute;
+    top:0;left:10%;right:10%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity:0.6;
+  }
+
+  /* === FORM === */
+  .form-group{ margin-bottom:16px; }
+
+  .form-label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    font-weight:700;
+    color:var(--cyan);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
+    font-family:'Share Tech Mono',monospace;
+    opacity:0.8;
+  }
+  .form-label::before{
+    content:'//';
+    opacity:0.5;
+    font-size:10px;
+  }
+
+  .form-input-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .form-input-wrap svg{
+    position:absolute;
+    left:13px;
+    width:15px;height:15px;
+    color:var(--cyan);
+    pointer-events:none;
+    opacity:0.6;
+  }
+  .form-input{
+    width:100%;
+    background:rgba(0,245,255,0.03);
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:10px;
+    padding:13px 13px 13px 40px;
+    color:var(--cyan);
+    font-size:14px;
+    outline:none;
+    font-family:'Share Tech Mono',monospace;
+    transition:all .2s;
+    caret-color:var(--cyan);
+  }
+  .form-input::placeholder{
+    color:rgba(0,245,255,0.25);
+    font-family:'Share Tech Mono',monospace;
+  }
+  .form-input:focus{
+    border-color:rgba(0,245,255,0.5);
+    background:rgba(0,245,255,0.05);
+    box-shadow:
+      0 0 0 2px rgba(0,245,255,0.08),
+      0 0 15px rgba(0,245,255,0.1),
+      inset 0 0 10px rgba(0,245,255,0.03);
+  }
+
+  .toggle-pw-btn{
+    position:absolute;
+    right:10px;
+    width:30px;height:30px;
+    border-radius:7px;
+    background:none;
+    border:none;
+    color:rgba(0,245,255,0.4);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:color .2s;
+  }
+  .toggle-pw-btn:hover{ color:var(--cyan); }
+  .toggle-pw-btn svg{ width:15px;height:15px;position:static; }
+
+  /* === ERROR === */
+  .form-error{
+    display:none;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,45,107,0.06);
+    border:1px solid rgba(255,45,107,0.35);
+    color:#ff5c87;
+    font-size:12px;
+    font-weight:600;
+    padding:10px 13px;
+    border-radius:9px;
+    margin-bottom:16px;
+    font-family:'Share Tech Mono',monospace;
+    box-shadow:0 0 15px rgba(255,45,107,0.1);
+  }
+  .form-error.show{ display:flex; }
+  .form-error svg{ width:14px;height:14px;flex-shrink:0; }
+
+  /* === SUBMIT BTN === */
+  .login-submit{
+    width:100%;
+    background:transparent;
+    color:var(--cyan);
+    border:1px solid rgba(0,245,255,0.5);
+    border-radius:12px;
+    padding:14px 24px;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:6px;
+    font-family:'Orbitron',sans-serif;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    position:relative;
+    overflow:hidden;
+    transition:all .25s;
+    box-shadow:
+      0 0 20px rgba(0,245,255,0.15),
+      inset 0 0 20px rgba(0,245,255,0.03);
+  }
+  .login-submit::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg, transparent 0%, rgba(0,245,255,0.08) 50%, transparent 100%);
+    transform:translateX(-100%);
+    transition:transform .4s ease;
+  }
+  .login-submit:hover::before{ transform:translateX(100%); }
+  .login-submit:hover{
+    background:rgba(0,245,255,0.07);
+    border-color:var(--cyan);
+    box-shadow:
+      0 0 25px rgba(0,245,255,0.3),
+      0 0 50px rgba(0,245,255,0.1),
+      inset 0 0 20px rgba(0,245,255,0.05);
+    text-shadow:0 0 10px var(--cyan);
+  }
+  .login-submit:disabled{
+    opacity:0.4;
+    cursor:default;
+    box-shadow:none;
+  }
+  .login-submit svg{ width:16px;height:16px; }
+
+  .login-spinner{
+    width:15px;height:15px;
+    border:2px solid rgba(0,245,255,0.2);
+    border-top-color:var(--cyan);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+    box-shadow:0 0 8px var(--cyan);
+  }
+  .login-submit.loading .login-spinner{ display:inline-block; }
+  .login-submit.loading .submit-label,
+  .login-submit.loading svg:not(.login-spinner){ display:none; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* === DIVIDER === */
+  .login-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:8px 0 0;
+  }
+  .login-divider::before,.login-divider::after{
+    content:'';flex:1;
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(0,245,255,0.15), transparent);
+  }
+  .login-divider span{
+    font-size:10px;
+    color:rgba(0,245,255,0.3);
+    font-family:'Share Tech Mono',monospace;
+    white-space:nowrap;
+    letter-spacing:1px;
+  }
+
+  /* === FOOTER === */
+  .login-footer-note{
+    text-align:center;
+    font-size:12px;
+    color:var(--text-dim);
+    margin-top:18px;
+    line-height:1.7;
+    font-family:'Share Tech Mono',monospace;
+  }
+  .login-footer-note a{
+    color:var(--pink);
+    font-weight:600;
+    text-shadow:0 0 8px var(--pink);
+  }
+
+  .login-bottom-spacer{ flex:1; }
+
+  .page-footer{
+    text-align:center;
+    padding:14px 0 max(18px, env(safe-area-inset-bottom));
+    font-size:10px;
+    color:rgba(0,245,255,0.2);
+    font-family:'Share Tech Mono',monospace;
+    letter-spacing:1px;
+    position:relative;z-index:1;
+  }
+
+  /* === FLICKER ANIM === */
+  @keyframes flicker{
+    0%,98%,100%{ opacity:1; }
+    99%{ opacity:0.85; }
+  }
+  .login-card{ animation:flicker 6s infinite; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-blob cyan"></div>
+<div class="glow-blob pink"></div>
+
+<div class="page">
+
+  <button class="back-btn" id="backBtn" aria-label="Kembali">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+
+  <div class="login-brand">
+    <div class="brand-icon-wrap">
+      <div class="login-brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <span class="icon-corner tl"></span>
+      <span class="icon-corner tr"></span>
+      <span class="icon-corner bl"></span>
+      <span class="icon-corner br"></span>
+    </div>
+    <div class="login-title">RT <span class="num">37</span> Network</div>
+    <div class="login-sub">Masuk dengan kode rumah dan password Anda</div>
+  </div>
+
+  <div class="login-card">
+    <span class="card-corner tl"></span>
+    <span class="card-corner tr"></span>
+    <span class="card-corner bl"></span>
+    <span class="card-corner br"></span>
+    <div class="card-scan"></div>
+
+    <div class="form-error" id="formError">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="formErrorText">Kode rumah atau password salah.</span>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="kodeRumah">Kode Rumah</label>
+        <div class="form-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <input type="text" id="kodeRumah" class="form-input" placeholder="Contoh: RT37-A01" autocomplete="username" autocapitalize="characters">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="form-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="password" class="form-input" placeholder="Masukkan password" autocomplete="current-password" style="padding-right:44px;">
+          <button type="button" class="toggle-pw-btn" id="togglePw" aria-label="Lihat password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="login-submit" id="loginSubmit">
+        <span class="login-spinner"></span>
+        <span class="submit-label">AKSES JARINGAN</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </form>
+
+    <div class="login-divider"><span>SISTEM TERENKRIPSI</span></div>
+  </div>
+
+  <p class="login-footer-note">
+    Belum punya akun atau lupa password?<br>
+    Hubungi <a href="#">pengurus RT 37</a> untuk dibantu.
+  </p>
+
+  <div class="login-bottom-spacer"></div>
+  <div class="page-footer">RT 37 NETWORK // KEL. KIDANGBANG // v2.0</div>
+
+</div>
+
+<script>
+  const backBtn = document.getElementById('backBtn');
+  const loginForm = document.getElementById('loginForm');
+  const loginSubmit = document.getElementById('loginSubmit');
+  const kodeRumahInput = document.getElementById('kodeRumah');
+  const passwordInput = document.getElementById('password');
+  const togglePw = document.getElementById('togglePw');
+  const formError = document.getElementById('formError');
+  const formErrorText = document.getElementById('formErrorText');
+
+  backBtn.addEventListener('click', () => { window.location.href = 'index.html'; });
+
+  togglePw.addEventListener('click', () => {
+    const isPw = passwordInput.type === 'password';
+    passwordInput.type = isPw ? 'text' : 'password';
+  });
+
+  function showError(msg){
+    formErrorText.textContent = msg;
+    formError.classList.add('show');
+  }
+  function hideError(){ formError.classList.remove('show'); }
+
+  const users = [
+    { kode: 'FELIX-A7K291X', password: 'RT37kulon', nama: 'Felix Shea', role: 'admin' },
+    { kode: 'RT37-A01',      password: 'ketua123',  nama: 'Pak RT',     role: 'rt' },
+    { kode: 'RT37-A02',      password: 'rw123',     nama: 'Pak RW',     role: 'rw' },
+    { kode: 'RT37-B05',      password: 'warga123',  nama: 'Sari',       role: 'warga' },
+    { kode: 'RT37-C10',      password: 'ustadz123', nama: 'Ustadz Hadi',role: 'ustadz' },
+  ];
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    hideError();
+    const kode = kodeRumahInput.value.trim().toUpperCase();
+    const pw = passwordInput.value.trim();
+    if(!kode || !pw){ showError('Kode rumah dan password wajib diisi.'); return; }
+    loginSubmit.classList.add('loading');
+    loginSubmit.disabled = true;
+    setTimeout(() => {
+      const user = users.find(u => u.kode === kode && u.password === pw);
+      if(user){
+        sessionStorage.setItem('rt37_user', JSON.stringify(user));
+        window.location.href = 'feed.html';
+      } else {
+        loginSubmit.classList.remove('loading');
+        loginSubmit.disabled = false;
+        showError('Kode rumah atau password salah. Silakan coba lagi.');
+      }
+    }, 900);
+  });
+</script>
+</body>
+</html>
