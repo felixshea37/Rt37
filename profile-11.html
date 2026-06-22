@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil — RT 37 Network</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#04010d;
+    --card:#08051a;
+    --text:#e0d8ff;
+    --text-dim:#6b5f9e;
+    --cyan:#00f5ff;
+    --pink:#ff00c8;
+    --yellow:#f5e642;
+    --danger:#ff2d6b;
+    --green:#39ff8a;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{
+    min-height:100vh;min-height:100dvh;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    -webkit-tap-highlight-color:transparent;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,0.012) 2px,rgba(0,245,255,0.012) 4px);
+    pointer-events:none;z-index:0;
+  }
+  body::after{
+    content:'';position:fixed;inset:0;
+    background:linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;pointer-events:none;z-index:0;
+  }
+  .glow-blob{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;opacity:0.12;}
+  .glow-blob.cyan{width:300px;height:300px;background:var(--cyan);top:-80px;left:-80px;}
+  .glow-blob.pink{width:260px;height:260px;background:var(--pink);bottom:-60px;right:-60px;}
+
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;}
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(4,1,13,0.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,245,255,0.1);
+    padding:0 16px;
+    height:54px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .back-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(0,245,255,0.05);
+    border:1px solid rgba(0,245,255,0.2);
+    color:var(--cyan);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex-shrink:0;
+  }
+  .back-btn svg{width:18px;height:18px;}
+  .topbar-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:13px;font-weight:800;
+    color:var(--cyan);letter-spacing:1px;
+    text-shadow:0 0 10px rgba(0,245,255,0.4);
+  }
+
+  /* PAGE */
+  .page{max-width:480px;margin:0 auto;padding:0 16px 100px;position:relative;z-index:1;}
+
+  /* PROFILE HEADER */
+  .profile-header{
+    display:flex;flex-direction:column;align-items:center;
+    padding:28px 0 20px;gap:12px;
+  }
+  .avatar-wrap{position:relative;cursor:pointer;}
+  .avatar-big{
+    width:88px;height:88px;border-radius:50%;
+    background:linear-gradient(135deg,rgba(0,245,255,0.15),rgba(255,0,200,0.1));
+    border:2px solid rgba(0,245,255,0.4);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Orbitron',sans-serif;
+    font-size:28px;font-weight:900;
+    color:var(--cyan);
+    box-shadow:0 0 25px rgba(0,245,255,0.2),0 0 50px rgba(0,245,255,0.08);
+    overflow:hidden;position:relative;
+  }
+  .avatar-big img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+  .avatar-edit-overlay{
+    position:absolute;inset:0;border-radius:50%;
+    background:rgba(0,0,0,0.55);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .2s;
+  }
+  .avatar-wrap:hover .avatar-edit-overlay{opacity:1;}
+  .avatar-edit-overlay svg{width:22px;height:22px;color:#fff;}
+  #fotoInput{display:none;}
+
+  .profile-nama{
+    font-family:'Orbitron',sans-serif;
+    font-size:18px;font-weight:900;
+    color:var(--text);letter-spacing:0.5px;
+    text-align:center;
+  }
+  .profile-kode{
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;color:var(--text-dim);
+    text-align:center;
+  }
+  .profile-role-badge{
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px;font-weight:700;
+    padding:3px 10px;border-radius:20px;
+    letter-spacing:1px;text-transform:uppercase;
+  }
+  .role-admin{ background:rgba(150,90,220,0.15);color:#965adc;border:1px solid rgba(150,90,220,0.3); }
+  .role-rt{ background:rgba(224,168,71,0.15);color:var(--yellow);border:1px solid rgba(224,168,71,0.3); }
+  .role-rw{ background:rgba(230,120,50,0.15);color:#e67832;border:1px solid rgba(230,120,50,0.3); }
+  .role-warga{ background:rgba(0,245,255,0.08);color:var(--cyan);border:1px solid rgba(0,245,255,0.25); }
+  .role-ustadz{ background:rgba(60,180,120,0.15);color:#3cb478;border:1px solid rgba(60,180,120,0.3); }
+
+  /* SECTION */
+  .section{
+    background:rgba(8,5,26,0.8);
+    border:1px solid rgba(0,245,255,0.1);
+    border-radius:16px;
+    padding:18px 16px;
+    margin-bottom:14px;
+    position:relative;
+    backdrop-filter:blur(6px);
+  }
+  .section-title{
+    font-family:'Share Tech Mono',monospace;
+    font-size:10px;color:var(--cyan);
+    letter-spacing:1.5px;text-transform:uppercase;
+    opacity:0.7;margin-bottom:14px;
+  }
+  .section-title::before{content:'// ';opacity:0.5;}
+
+  /* FORM FIELDS */
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{
+    display:block;font-size:11px;font-weight:600;
+    color:var(--text-dim);text-transform:uppercase;
+    letter-spacing:0.8px;margin-bottom:6px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    background:rgba(0,245,255,0.03);
+    border:1px solid rgba(0,245,255,0.12);
+    border-radius:10px;
+    padding:11px 13px;
+    color:var(--text);
+    font-size:14px;font-family:'Inter',sans-serif;
+    outline:none;
+    transition:all .2s;
+    caret-color:var(--cyan);
+  }
+  .field textarea{resize:none;height:80px;line-height:1.5;}
+  .field input:focus, .field textarea:focus{
+    border-color:rgba(0,245,255,0.4);
+    background:rgba(0,245,255,0.05);
+    box-shadow:0 0 0 2px rgba(0,245,255,0.07);
+  }
+  .field input::placeholder,.field textarea::placeholder{color:var(--text-dim);opacity:0.5;}
+  .field input:disabled{opacity:0.5;cursor:not-allowed;}
+  .field input[type=date]{color-scheme:dark;}
+  .field input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.7) sepia(1) hue-rotate(160deg);}
+
+  /* SAVE BTN */
+  .save-btn{
+    width:100%;
+    background:transparent;
+    color:var(--cyan);
+    border:1px solid rgba(0,245,255,0.45);
+    border-radius:12px;
+    padding:13px;
+    font-size:13px;font-weight:800;
+    font-family:'Orbitron',sans-serif;
+    letter-spacing:2px;text-transform:uppercase;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:all .25s;
+    position:relative;overflow:hidden;
+    box-shadow:0 0 15px rgba(0,245,255,0.1);
+    margin-top:4px;
+  }
+  .save-btn:hover{
+    background:rgba(0,245,255,0.07);
+    box-shadow:0 0 25px rgba(0,245,255,0.25);
+  }
+  .save-btn:disabled{opacity:0.4;cursor:default;}
+  .save-btn svg{width:15px;height:15px;}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:rgba(57,255,138,0.12);
+    border:1px solid rgba(57,255,138,0.35);
+    color:var(--green);
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;padding:10px 18px;border-radius:10px;
+    white-space:nowrap;
+    opacity:0;transition:all .3s;
+    z-index:200;
+    box-shadow:0 0 15px rgba(57,255,138,0.1);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.error{
+    background:rgba(255,45,107,0.1);
+    border-color:rgba(255,45,107,0.35);
+    color:#ff5c87;
+  }
+
+  /* LOADING */
+  .page-loading{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:60vh;gap:14px;
+  }
+  .spinner{
+    width:32px;height:32px;
+    border:2px solid rgba(0,245,255,0.15);
+    border-top-color:var(--cyan);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    box-shadow:0 0 10px rgba(0,245,255,0.2);
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;color:var(--text-dim);letter-spacing:1px;
+  }
+
+  /* PASSWORD TOGGLE */
+  .pw-wrap{position:relative;}
+  .pw-wrap input{padding-right:40px;}
+  .pw-toggle{
+    position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    background:none;border:none;color:var(--text-dim);
+    cursor:pointer;padding:4px;
+  }
+  .pw-toggle svg{width:15px;height:15px;display:block;}
+
+  /* DIVIDER */
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(0,245,255,0.1),transparent);
+    margin:4px 0 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-blob cyan"></div>
+<div class="glow-blob pink"></div>
+
+<div class="topbar">
+  <button class="back-btn" onclick="history.back()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="topbar-title">PROFIL SAYA</div>
+</div>
+
+<div class="page" id="mainContent">
+  <div class="page-loading" id="loadingState">
+    <div class="spinner"></div>
+    <div class="loading-text">MEMUAT DATA...</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPA_URL = 'https://iioavwvkdbtmbzcrywtl.supabase.co';
+  const SUPA_KEY = 'sb_publishable_4oe4tIZpfngQCpfY8Va4Kg_ns3fliZh';
+
+  const page = document.getElementById('mainContent');
+  const toast = document.getElementById('toast');
+
+  // Get user from session
+  const sessionUser = JSON.parse(sessionStorage.getItem('rt37_user') || 'null');
+  if(!sessionUser){ window.location.href = 'login.html'; }
+
+  let userData = null;
+
+  function showToast(msg, isError=false){
+    toast.textContent = msg;
+    toast.className = 'toast' + (isError ? ' error' : '');
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function roleBadge(role){
+    const labels = {admin:'Admin',rt:'Ketua RT',rw:'Ketua RW',warga:'Warga',ustadz:'Ustadz'};
+    return `<span class="profile-role-badge role-${role}">${labels[role]||role}</span>`;
+  }
+
+  function initial(nama){ return nama ? nama.charAt(0).toUpperCase() : '?'; }
+
+  function renderPage(u){
+    const hasPhoto = u.foto_url && u.foto_url.trim() !== '';
+    page.innerHTML = `
+      <div class="profile-header">
+        <div class="avatar-wrap" onclick="document.getElementById('fotoInput').click()">
+          <div class="avatar-big" id="avatarBig">
+            ${hasPhoto ? `<img src="${u.foto_url}" id="avatarImg">` : initial(u.nama)}
+          </div>
+          <div class="avatar-edit-overlay">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+        </div>
+        <input type="file" id="fotoInput" accept="image/*" onchange="handleFotoChange(this)">
+        <div class="profile-nama" id="displayNama">${u.nama}</div>
+        <div class="profile-kode">${u.kode}</div>
+        ${roleBadge(u.role)}
+      </div>
+
+      <!-- Info Pribadi -->
+      <div class="section">
+        <div class="section-title">Info Pribadi</div>
+        <div class="field">
+          <label>Nama lengkap</label>
+          <input type="text" value="${u.nama||''}" disabled title="Nama tidak bisa diubah. Hubungi admin RT.">
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;font-family:'Share Tech Mono',monospace;opacity:0.6;">// nama hanya bisa diubah oleh admin</div>
+        </div>
+        <div class="field">
+          <label>Username</label>
+          <input type="text" id="fieldUsername" value="${u.username||''}" placeholder="@username">
+        </div>
+        <div class="field">
+          <label>Bio</label>
+          <textarea id="fieldBio" placeholder="Tulis sesuatu tentang diri kamu...">${u.bio||''}</textarea>
+        </div>
+        <div class="field">
+          <label>Tanggal Lahir</label>
+          <input type="date" id="fieldTglLahir" value="${u.tgl_lahir||''}">
+        </div>
+        <div class="field">
+          <label>No. HP (WhatsApp)</label>
+          <input type="tel" id="fieldHp" value="${u.no_hp||''}" placeholder="08xx-xxxx-xxxx">
+        </div>
+        <div class="field">
+          <label>Alamat</label>
+          <input type="text" id="fieldAlamat" value="${u.alamat||''}" placeholder="Alamat rumah">
+        </div>
+        <div class="field">
+          <label>Kode Rumah</label>
+          <input type="text" value="${u.kode}" disabled>
+        </div>
+        <button class="save-btn" onclick="saveProfile()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          SIMPAN PROFIL
+        </button>
+      </div>
+
+      <!-- Ganti Password -->
+      <div class="section">
+        <div class="section-title">Keamanan</div>
+        <div class="field">
+          <label>Password lama</label>
+          <div class="pw-wrap">
+            <input type="password" id="fieldPwLama" placeholder="Password saat ini">
+            <button class="pw-toggle" onclick="togglePw('fieldPwLama',this)" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Password baru</label>
+          <div class="pw-wrap">
+            <input type="password" id="fieldPwBaru" placeholder="Password baru">
+            <button class="pw-toggle" onclick="togglePw('fieldPwBaru',this)" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Konfirmasi password baru</label>
+          <div class="pw-wrap">
+            <input type="password" id="fieldPwKonfirm" placeholder="Ulangi password baru">
+            <button class="pw-toggle" onclick="togglePw('fieldPwKonfirm',this)" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="save-btn" onclick="savePassword()" style="border-color:rgba(255,0,200,0.4);color:var(--pink);box-shadow:0 0 15px rgba(255,0,200,0.08);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          GANTI PASSWORD
+        </button>
+      </div>
+    `;
+  }
+
+  async function loadProfile(){
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/warga?kode=eq.${encodeURIComponent(sessionUser.kode)}&select=*`,
+        { headers:{ 'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY } }
+      );
+      const data = await res.json();
+      if(data && data.length > 0){
+        userData = data[0];
+        renderPage(userData);
+      }
+    } catch(e){
+      showToast('Gagal memuat profil', true);
+    }
+  }
+
+  async function saveProfile(){
+    const username = document.getElementById('fieldUsername').value.trim();
+    const bio = document.getElementById('fieldBio').value.trim();
+    const tgl_lahir = document.getElementById('fieldTglLahir').value;
+    const no_hp = document.getElementById('fieldHp').value.trim();
+    const alamat = document.getElementById('fieldAlamat').value.trim();
+
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/warga?kode=eq.${encodeURIComponent(sessionUser.kode)}`,
+        {
+          method:'PATCH',
+          headers:{
+            'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,
+            'Content-Type':'application/json','Prefer':'return=representation'
+          },
+          body: JSON.stringify({ username, bio, tgl_lahir, no_hp, alamat, updated_at: new Date().toISOString() })
+        }
+      );
+      const updated = await res.json();
+      if(updated && updated.length > 0){
+        userData = updated[0];
+        sessionStorage.setItem('rt37_user', JSON.stringify(userData));
+        showToast('Profil berhasil disimpan!');
+      }
+    } catch(e){
+      showToast('Gagal menyimpan profil', true);
+    }
+  }
+
+  async function savePassword(){
+    const pwLama = document.getElementById('fieldPwLama').value;
+    const pwBaru = document.getElementById('fieldPwBaru').value;
+    const pwKonfirm = document.getElementById('fieldPwKonfirm').value;
+
+    if(!pwLama||!pwBaru||!pwKonfirm){ showToast('Semua field wajib diisi', true); return; }
+    if(pwLama !== userData.password){ showToast('Password lama salah', true); return; }
+    if(pwBaru !== pwKonfirm){ showToast('Konfirmasi password tidak cocok', true); return; }
+    if(pwBaru.length < 6){ showToast('Password minimal 6 karakter', true); return; }
+
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/warga?kode=eq.${encodeURIComponent(sessionUser.kode)}`,
+        {
+          method:'PATCH',
+          headers:{
+            'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,
+            'Content-Type':'application/json','Prefer':'return=representation'
+          },
+          body: JSON.stringify({ password: pwBaru, updated_at: new Date().toISOString() })
+        }
+      );
+      const updated = await res.json();
+      if(updated && updated.length > 0){
+        userData = updated[0];
+        sessionStorage.setItem('rt37_user', JSON.stringify(userData));
+        document.getElementById('fieldPwLama').value='';
+        document.getElementById('fieldPwBaru').value='';
+        document.getElementById('fieldPwKonfirm').value='';
+        showToast('Password berhasil diganti!');
+      }
+    } catch(e){
+      showToast('Gagal mengganti password', true);
+    }
+  }
+
+  function handleFotoChange(input){
+    const file = input.files[0];
+    if(!file) return;
+    // Convert to base64 for preview + store as data URL
+    // For production, upload ke Supabase Storage
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target.result;
+      const avatarBig = document.getElementById('avatarBig');
+      let img = document.getElementById('avatarImg');
+      if(!img){
+        avatarBig.innerHTML = '';
+        img = document.createElement('img');
+        img.id = 'avatarImg';
+        avatarBig.appendChild(img);
+      }
+      img.src = dataUrl;
+
+      // Save foto_url to Supabase (data URL — ok for demo)
+      try {
+        await fetch(
+          `${SUPA_URL}/rest/v1/warga?kode=eq.${encodeURIComponent(sessionUser.kode)}`,
+          {
+            method:'PATCH',
+            headers:{
+              'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,
+              'Content-Type':'application/json'
+            },
+            body: JSON.stringify({ foto_url: dataUrl })
+          }
+        );
+        showToast('Foto profil diperbarui!');
+      } catch(e){
+        showToast('Gagal menyimpan foto', true);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function togglePw(id, btn){
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>
